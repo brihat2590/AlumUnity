@@ -20,7 +20,7 @@ const SignIn: React.FC = () => {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.error('Please fill all the fields');
+      toast.error('Please fill in all fields.');
       return;
     }
 

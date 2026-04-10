@@ -29,7 +29,7 @@ const Forums = () => {
     date: new Date().toISOString(),
   });
 
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState<any[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -56,7 +56,7 @@ const Forums = () => {
   const fetchQuestions = async () => {
     const response = await getAllQuestions();
     if (response.success) {
-      const fetchedQuestions = response.questions;
+      const fetchedQuestions = response.questions || [];
       const userIds = [...new Set(fetchedQuestions.map((q: any) => q.posted_by))];
 
       const userFetches = await Promise.all(userIds.map(async (id) => {
@@ -85,7 +85,7 @@ const Forums = () => {
     if (response.success) {
       fetchQuestions();
     } else {
-      alert(`Failed to upvote: ${response.message}`);
+      toast.error(`Failed to upvote: ${response.message}`);
     }
   };
 
@@ -177,7 +177,7 @@ const Forums = () => {
                   </div>
                   <div className="flex items-center gap-4 mt-3">
                     <Button
-                      variant={question.upVotes?.includes(userId) ? 'default' : 'outline'}
+                      variant={question.upVotes?.includes(userId) ? 'primary' : 'outline'}
                       className="flex items-center gap-2 text-green-600 hover:text-green-700"
                       onClick={(e) => {
                         e.preventDefault();
@@ -188,7 +188,7 @@ const Forums = () => {
                       {question.upVotes?.length || 0}
                     </Button>
                     <Button
-                      variant={question.downVotes?.includes(userId) ? 'default' : 'outline'}
+                      variant={question.downVotes?.includes(userId) ? 'primary' : 'outline'}
                       className="flex items-center gap-2 text-red-600 hover:text-red-700"
                       onClick={(e) => {
                         e.preventDefault();

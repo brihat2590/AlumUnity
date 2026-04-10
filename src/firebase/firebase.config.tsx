@@ -75,7 +75,7 @@ export const FirebaseProvider = ({ children }: { children: React.ReactNode }) =>
       );
       toast.success(`Signed up as ${result.user.email}`);
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error.message || 'Sign up failed. Please try again.');
     }
   };
   const signInWithEmail = async (email: string, password: string) => {
@@ -92,7 +92,7 @@ export const FirebaseProvider = ({ children }: { children: React.ReactNode }) =>
       const result = await signInWithPopup(auth, googleProvider);
       toast.success(`Signed in as ${result.user.displayName}`);
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error.message || 'Google sign-in failed.');
     }
   };
 
@@ -103,7 +103,7 @@ export const FirebaseProvider = ({ children }: { children: React.ReactNode }) =>
         `Signed in as ${result.user.displayName || result.user.email}`
       );
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error.message || 'GitHub sign-in failed.');
     }
   };
 
@@ -112,7 +112,7 @@ export const FirebaseProvider = ({ children }: { children: React.ReactNode }) =>
       await signOut(auth);
       toast.success("Logged out");
     } catch (error: any) {
-      toast.error("Failed to logout");
+      toast.error("Failed to log out.");
     }
   };
 

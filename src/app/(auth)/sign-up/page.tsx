@@ -20,7 +20,7 @@ const SignUp: React.FC = () => {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.error('Please fill all the fields');
+      toast.error('Please fill in all fields.');
       return;
     }
 
@@ -30,7 +30,7 @@ const SignUp: React.FC = () => {
       
       router.push('/sign-in');
     } catch (err: any) {
-      toast.error(err.message || 'Signup failed');
+      toast.error(err.message || 'Sign up failed.');
     } finally {
       setLoading(false);
     }

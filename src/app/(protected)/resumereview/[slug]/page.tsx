@@ -137,7 +137,7 @@ export default function ResumeReviewDetailPage() {
         <p>Resume thread not found.</p>
         <Link
           href="/resumereview"
-          className="rounded-lg border border-indigo-200 bg-white px-4 py-2 text-sm text-indigo-700 transition hover:bg-indigo-50"
+          className="rounded-full bg-white/85 px-4 py-2 text-sm text-indigo-700 shadow-[0_12px_24px_-20px_rgba(79,70,229,0.9)] ring-1 ring-indigo-100/80 transition hover:-translate-y-0.5"
         >
           Back to Resume Review
         </Link>
@@ -146,20 +146,18 @@ export default function ResumeReviewDetailPage() {
   }
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-slate-50 px-4 py-8 md:px-8">
-      <div className="pointer-events-none absolute -top-24 left-1/2 h-[320px] w-[320px] -translate-x-1/2 rounded-full bg-indigo-300/25 blur-3xl" />
-      <div className="pointer-events-none absolute bottom-10 -left-10 h-[240px] w-[240px] rounded-full bg-blue-300/20 blur-3xl" />
-
-      <div className="relative mx-auto max-w-6xl space-y-6">
+    <section className="relative min-h-screen overflow-hidden bg-slate-50 px-4 py-10 md:px-8 md:py-12">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_6%,rgba(165,180,252,0.14),transparent_38%)]" />
+      <div className="relative mx-auto max-w-7xl space-y-7">
         <Link
           href="/resumereview"
-          className="inline-flex items-center gap-2 text-sm text-indigo-600 transition hover:text-indigo-700"
+          className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1.5 text-sm text-indigo-600 shadow-[0_12px_26px_-20px_rgba(79,70,229,0.95)] ring-1 ring-indigo-100/75 backdrop-blur transition hover:-translate-y-0.5"
         >
           <ArrowLeft className="h-4 w-4" /> Back to all resumes
         </Link>
 
         <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-          <article className="rounded-3xl border border-indigo-100 bg-white p-4 shadow-[0_24px_80px_-50px_rgba(99,102,241,0.55)] md:p-6">
+          <article className="rounded-[30px] bg-white/86 p-5 shadow-[0_30px_65px_-45px_rgba(79,70,229,0.82)] ring-1 ring-indigo-100/80 backdrop-blur md:p-7">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <h1 className="text-2xl font-semibold text-slate-900 md:text-3xl">{resume.title}</h1>
@@ -168,7 +166,7 @@ export default function ResumeReviewDetailPage() {
                 </p>
               </div>
 
-              <div className="inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
+              <div className="inline-flex items-center px-1 py-1 text-xs font-medium text-indigo-700">
                 <FileText className="mr-1 h-3.5 w-3.5" /> {resume.fileName || 'resume'}
               </div>
             </div>
@@ -179,8 +177,8 @@ export default function ResumeReviewDetailPage() {
                 onClick={() => setPreviewMode('inline')}
                 className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
                   previewMode === 'inline'
-                    ? 'bg-indigo-600 text-white'
-                    : 'border border-indigo-200 bg-white text-indigo-700 hover:bg-indigo-50'
+                    ? 'bg-indigo-600 text-white shadow-[0_12px_26px_-20px_rgba(79,70,229,0.8)]'
+                    : 'bg-white/80 text-indigo-700 ring-1 ring-indigo-100 hover:bg-white'
                 }`}
               >
                 Inline preview
@@ -190,8 +188,8 @@ export default function ResumeReviewDetailPage() {
                 onClick={() => setPreviewMode('viewer')}
                 className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
                   previewMode === 'viewer'
-                    ? 'bg-indigo-600 text-white'
-                    : 'border border-indigo-200 bg-white text-indigo-700 hover:bg-indigo-50'
+                    ? 'bg-indigo-600 text-white shadow-[0_12px_26px_-20px_rgba(79,70,229,0.8)]'
+                    : 'bg-white/80 text-indigo-700 ring-1 ring-indigo-100 hover:bg-white'
                 }`}
               >
                 Compatibility viewer
@@ -204,7 +202,7 @@ export default function ResumeReviewDetailPage() {
               </p>
             )}
 
-            <div className="mt-4 overflow-hidden rounded-xl border border-indigo-100 bg-white">
+            <div className="mt-4 overflow-hidden rounded-2xl bg-white ring-1 ring-indigo-100/80">
               <iframe
                 src={previewMode === 'inline' ? previewConfig.inlineSrc : previewConfig.viewerSrc}
                 title={resume.title}
@@ -217,14 +215,14 @@ export default function ResumeReviewDetailPage() {
                 href={resume.resumeUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center rounded-lg border border-indigo-200 bg-white px-4 py-2 text-sm text-indigo-700 transition hover:bg-indigo-50"
+                className="inline-flex items-center rounded-full bg-white/85 px-4 py-2 text-sm text-indigo-700 shadow-[0_12px_26px_-20px_rgba(79,70,229,0.95)] ring-1 ring-indigo-100/80 transition hover:-translate-y-0.5"
               >
                 <ExternalLink className="mr-1.5 h-4 w-4" /> Open resume in new tab
               </a>
             </div>
           </article>
 
-          <aside className="rounded-3xl border border-indigo-100 bg-white p-4 shadow-sm md:p-6">
+          <aside className="rounded-[30px] bg-white/86 p-5 shadow-[0_24px_52px_-44px_rgba(79,70,229,0.82)] ring-1 ring-indigo-100/80 backdrop-blur md:p-6">
             <h2 className="mb-4 inline-flex items-center gap-2 text-lg font-semibold text-slate-900">
               <MessageCircle className="h-5 w-5 text-indigo-600" /> Comments ({comments.length})
             </h2>
@@ -235,12 +233,12 @@ export default function ResumeReviewDetailPage() {
                 onChange={(e) => setComment(e.target.value)}
                 rows={4}
                 placeholder="Share constructive feedback..."
-                className="w-full rounded-xl border border-indigo-100 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-indigo-300"
+                className="w-full rounded-2xl bg-white/95 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none ring-1 ring-indigo-100 transition focus:ring-2 focus:ring-indigo-200"
               />
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_16px_34px_-20px_rgba(79,70,229,0.75)] transition hover:-translate-y-0.5 hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting ? (
                   <>
@@ -256,12 +254,12 @@ export default function ResumeReviewDetailPage() {
 
             <div className="max-h-[52vh] space-y-3 overflow-y-auto pr-1">
               {comments.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-indigo-200 p-4 text-sm text-slate-600">
+                <div className="rounded-2xl bg-indigo-50/40 p-4 text-sm text-slate-600 ring-1 ring-indigo-100/70">
                   No comments yet. Be the first to leave feedback.
                 </div>
               ) : (
                 comments.map((item) => (
-                  <div key={item.id} className="rounded-xl border border-indigo-100 bg-indigo-50/40 p-3">
+                  <div key={item.id} className="rounded-2xl bg-indigo-50/45 p-3 ring-1 ring-indigo-100/70">
                     <div className="flex items-start gap-3">
                       {((item.postedBy === loggedInUser?.uid && loggedInUser?.photoURL) || item.postedByPhotoURL) ? (
                         <img
@@ -270,7 +268,7 @@ export default function ResumeReviewDetailPage() {
                           className="mt-0.5 h-8 w-8 shrink-0 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-semibold text-indigo-700">
+                        <div className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-xs font-semibold text-indigo-700 ring-1 ring-indigo-100">
                           {(item.postedByName || 'A').charAt(0).toUpperCase()}
                         </div>
                       )}
