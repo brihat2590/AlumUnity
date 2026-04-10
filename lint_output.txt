@@ -1,0 +1,139 @@
+
+> alum_unity@0.1.0 lint
+> next lint
+
+
+./src/app/(auth)/layout.tsx
+9:11  Error: 'loggedInUser' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/(auth)/sign-in/page.tsx
+32:19  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+117:12  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./src/app/(auth)/sign-up/page.tsx
+32:19  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/(protected)/dashboard/page.tsx
+8:10  Error: 'Role' is defined but never used.  @typescript-eslint/no-unused-vars
+45:62  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+75:6  Warning: React Hook useEffect has a missing dependency: 'userMap'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+85:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(protected)/events/page.tsx
+18:8  Error: 'Link' is defined but never used.  @typescript-eslint/no-unused-vars
+60:11  Error: 'router' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+201:33  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/(protected)/forums/[forumId]/page.tsx
+7:10  Error: 'createQuestion' is defined but never used.  @typescript-eslint/no-unused-vars
+7:26  Error: 'getAllQuestions' is defined but never used.  @typescript-eslint/no-unused-vars
+7:43  Error: 'createOrremoveUpvoteForQuestions' is defined but never used.  @typescript-eslint/no-unused-vars
+7:77  Error: 'createOrremoveDownvoteForQuestions' is defined but never used.  @typescript-eslint/no-unused-vars
+8:10  Error: 'toast' is defined but never used.  @typescript-eslint/no-unused-vars
+14:44  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+23:6  Warning: React Hook useEffect has a missing dependency: 'fetchQuestion'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+103:43  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+129:33  Error: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+139:33  Error: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/(protected)/forums/page.tsx
+14:10  Error: 'Input' is defined but never used.  @typescript-eslint/no-unused-vars
+32:46  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+60:60  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+103:6  Warning: React Hook useEffect has a missing dependency: 'fetchQuestions'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+160:39  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+241:7  Error: 'ThumbsDownIcon' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/(protected)/oppertunities/page.tsx
+205:46  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/(protected)/profile/page.tsx
+173:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(protected)/resumereview/[slug]/page.tsx
+11:28  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+58:6  Warning: React Hook useEffect has a missing dependency: 'loadResume'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+265:25  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(protected)/resumereview/page.tsx
+19:28  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+115:25  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+177:25  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/(protected)/videochat/[callId]/page.tsx
+52:6  Warning: React Hook useEffect has missing dependencies: 'tokenProvider' and 'user'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+70:6  Warning: React Hook useEffect has a missing dependency: 'callId'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/api/cloudinary/upload/route.ts
+142:19  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/page.tsx
+65:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/test/page.tsx
+4:10  Error: 'createEvent' is defined but never used.  @typescript-eslint/no-unused-vars
+4:23  Error: 'getAllEvents' is defined but never used.  @typescript-eslint/no-unused-vars
+4:37  Error: 'getLatestThreeEvents' is defined but never used.  @typescript-eslint/no-unused-vars
+5:10  Error: 'createOpportunity' is defined but never used.  @typescript-eslint/no-unused-vars
+5:29  Error: 'getAllOpportunities' is defined but never used.  @typescript-eslint/no-unused-vars
+6:10  Error: 'createOrremoveDownvoteForQuestions' is defined but never used.  @typescript-eslint/no-unused-vars
+6:46  Error: 'createOrremoveDownvoteForReplies' is defined but never used.  @typescript-eslint/no-unused-vars
+6:80  Error: 'createOrremoveUpvoteForQuestions' is defined but never used.  @typescript-eslint/no-unused-vars
+6:114  Error: 'createOrremoveUpvoteForReplies' is defined but never used.  @typescript-eslint/no-unused-vars
+6:146  Error: 'createQuestion' is defined but never used.  @typescript-eslint/no-unused-vars
+6:175  Error: 'getAllQuestions' is defined but never used.  @typescript-eslint/no-unused-vars
+6:192  Error: 'getQuestionById' is defined but never used.  @typescript-eslint/no-unused-vars
+6:209  Error: 'getThreeQuestionsWithMostUpvotes' is defined but never used.  @typescript-eslint/no-unused-vars
+7:10  Error: 'getUserInfo' is defined but never used.  @typescript-eslint/no-unused-vars
+7:23  Error: 'saveUserAfterLogin' is defined but never used.  @typescript-eslint/no-unused-vars
+7:43  Error: 'updateUserInfo' is defined but never used.  @typescript-eslint/no-unused-vars
+8:17  Error: 'use' is defined but never used.  @typescript-eslint/no-unused-vars
+12:5  Error: React Hook "useEffect" is called in function "page" that is neither a React function component nor a custom React Hook function. React component names must start with an uppercase letter. React Hook names must start with the word "use".  react-hooks/rules-of-hooks
+
+./src/components/CTA.tsx
+3:10  Error: 'Button' is defined but never used.  @typescript-eslint/no-unused-vars
+33:40  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./src/components/Hero.tsx
+33:6  Warning: React Hook useEffect has a missing dependency: 'images.length'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/QuoteDisplay.tsx
+12:9  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+12:17  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+
+./src/components/SideBar.tsx
+9:12  Error: 'loggedInUser' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/SideBarNew.tsx
+65:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+189:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/UserAvatar.tsx
+10:9  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/firebase/firebase.config.tsx
+6:10  Error: 'saveUserAfterLogin' is defined but never used.  @typescript-eslint/no-unused-vars
+77:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+85:14  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+85:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+94:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+105:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+114:14  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+114:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/firebase/resume.controller.ts
+34:19  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+57:19  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+136:19  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+173:19  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/firebase/user.controller.ts
+29:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+54:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+86:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/types/resume.d.ts
+23:15  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+43:15  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
