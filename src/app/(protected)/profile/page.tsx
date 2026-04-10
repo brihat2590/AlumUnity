@@ -7,7 +7,7 @@ import { useFirebase } from '@/firebase/firebase.config';
 const Profile = () => {
   // const userId = "imgInmRjc0noGAw5CFBa"; // TODO: Replace with actual user ID once auth is implemented
   const {loggedInUser} = useFirebase();
-  const userId = loggedInUser?.uid || ''; // Get the user ID from the logged-in user
+  const userId = loggedInUser?.uid || '';
 
   const [formData, setFormData] = useState({
     name: '',
@@ -29,6 +29,8 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
+      if (!userId) return;
+
       const response = await getUserInfo(userId);
       if (response.success && response.data) {
         const userData = response.data;
@@ -80,6 +82,11 @@ const Profile = () => {
   };
 
   const handleSave = async () => {
+    if (!userId) {
+      toast.error('User is not authenticated yet. Please try again.');
+      return;
+    }
+
     const userInfo = {
       ...formData,
       skills,
