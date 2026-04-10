@@ -3,12 +3,14 @@
 import { SidebarNew } from '@/components/SideBarNew';
 import { useFirebase } from '@/firebase/firebase.config';
 import { useRouter } from 'next/navigation';
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 import { FaSpinner } from 'react-icons/fa';
 
 const Layout = ({ children }: { children: ReactNode }) => {
-  const { loggedInUser, authloading, isUserLoggedIn } = useFirebase();
+  const { authloading, isUserLoggedIn } = useFirebase();
   const router = useRouter();
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     // Redirect only after loading is complete and user is not logged in
@@ -28,10 +30,16 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
   return (
     <div className="flex min-h-screen">
-      <div className="shrink-0">
-        <SidebarNew />
-      </div>
-      <main className="flex-1 p-4 overflow-auto bg-gray-50">
+      <SidebarNew onCollapseChange={setIsSidebarCollapsed} />
+
+      <div
+        className={cn(
+          'hidden shrink-0 transition-all duration-300 md:block',
+          isSidebarCollapsed ? 'w-[80px]' : 'w-[250px]'
+        )}
+      />
+
+      <main className="flex-1 overflow-auto bg-gray-50 p-4 transition-all duration-300">
         {children}
       </main>
     </div>

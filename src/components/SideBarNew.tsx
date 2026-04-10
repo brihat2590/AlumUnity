@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useFirebase } from '@/firebase/firebase.config';
@@ -16,6 +16,8 @@ import {
   LogOut,
   ChevronLeft,
   Zap,
+  Menu,
+  X,
 } from 'lucide-react';
 
 type MenuItem = {
@@ -30,40 +32,68 @@ const menuItems: MenuItem[] = [
   { icon: MessageSquare, label: 'Forums', path: '/forums' },
   { icon: Briefcase, label: 'Opportunities', path: '/oppertunities' },
   { icon: User, label: 'Profile', path: '/profile' },
+  {icon:Zap,label:"Resume review",path:"/resumereview"}
   // { icon: User, label: 'Video Chat', path: '/videochat' },
 ];
 
-export function SidebarNew() {
+type SidebarNewProps = {
+  onCollapseChange?: (isCollapsed: boolean) => void;
+};
+
+export function SidebarNew({ onCollapseChange }: SidebarNewProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
-  const{logOut,loggedInUser}=useFirebase();
+  const { logOut, loggedInUser } = useFirebase();
+
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    onCollapseChange?.(isCollapsed);
+  }, [isCollapsed, onCollapseChange]);
   // console.log(loggedInUser)
   //loggedInUser.displayName loggedInUser.email
   //loggedInUser.photoURL
 
   // logout is working
 
-  const logoutHandler=async()=>{
-    try{
+  const logoutHandler = async () => {
+    try {
       await logOut();
+    } catch (error: any) {
+      toast.error(error.message);
     }
-    catch(error:any){
-      toast.error(error.message)
-    }
-
-  }
+  };
   // console.log("the photo url is ",loggedInUser?.photoURL)
 
   return (
+    <>
+      <button
+        type="button"
+        aria-label="Open sidebar"
+        onClick={() => setIsMobileOpen(true)}
+        className="fixed left-3 top-3 z-50 inline-flex h-10 w-10 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-700 shadow-sm md:hidden"
+      >
+        <Menu className="h-5 w-5" />
+      </button>
 
-    //fixed ra left-0 top-0 le chai scroll huna dirako chaina
-    //min-h-scren layout ma ni halna paryo
-    //afno matra width lincha
+      {isMobileOpen && (
+        <button
+          type="button"
+          aria-label="Close sidebar overlay"
+          onClick={() => setIsMobileOpen(false)}
+          className="fixed inset-0 z-40 bg-black/40 md:hidden"
+        />
+      )}
+
     <aside
       className={cn(
-        'fixed left-0 top-0 flex flex-col min-h-screen bg-white border-r border-gray-200 transition-all duration-500 overflow-hidden shrink-0',
-        isCollapsed ? 'w-[80px]' : 'w-[250px]'
+        'fixed left-0 top-0 z-50 flex min-h-screen w-[250px] shrink-0 flex-col overflow-hidden border-r border-gray-200 bg-white transition-all duration-300 md:z-30',
+        isMobileOpen ? 'translate-x-0' : '-translate-x-full',
+        'md:translate-x-0',
+        isCollapsed ? 'md:w-[80px]' : 'md:w-[250px]'
       )}
     >
       {/* Header */}
@@ -99,16 +129,24 @@ export function SidebarNew() {
             </div>
           )}
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="h-8 w-8"
+        <button
+          type="button"
+          onClick={() => setIsCollapsed((prev) => !prev)}
+          className="hidden h-8 w-8 items-center justify-center rounded-md border border-transparent text-gray-700 transition-colors hover:bg-gray-100 md:inline-flex"
+          aria-label="Toggle sidebar collapse"
         >
           <ChevronLeft
             className={cn('h-4 w-4 transition-transform', isCollapsed && 'rotate-180')}
           />
-        </Button>
+        </button>
+        <button
+          type="button"
+          onClick={() => setIsMobileOpen(false)}
+          className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-transparent text-gray-700 transition-colors hover:bg-gray-100 md:hidden"
+          aria-label="Close sidebar"
+        >
+          <X className="h-4 w-4" />
+        </button>
       </div>
 
       {/* Navigation */}
@@ -116,9 +154,10 @@ export function SidebarNew() {
         {menuItems.map(({ icon: Icon, label, path }) => (
           <Link href={path} key={label}>
             <Button
-              variant="ghost"
+              variant="outline"
+              size="sm"
               className={cn(
-                'w-full justify-start mb-2 gap-3 my-2  ',
+                'my-2 mb-2 w-full justify-start gap-3 border-transparent bg-transparent',
                 !isCollapsed ? 'px-4' : 'px-0 justify-center',
                 pathname === path
                   ? 'bg-gradient-to-r from-purple-500/10 to-purple-600/10 text-purple-700'
@@ -175,10 +214,11 @@ export function SidebarNew() {
 
       <div className="p-2 border-t border-gray-200">
         <Button
-          variant="ghost"
+          variant="outline"
+          size="sm"
           onClick={logoutHandler}
           className={cn(
-            'w-full justify-start gap-3',
+            'w-full justify-start gap-3 border-transparent bg-transparent',
             !isCollapsed ? 'px-4' : 'px-0 justify-center',
             pathname === '/logout'
               ? 'bg-gradient-to-r from-purple-500/10 to-purple-600/10 text-purple-700'
@@ -195,5 +235,6 @@ export function SidebarNew() {
         </Button>
       </div>
     </aside>
+    </>
   );
 }
