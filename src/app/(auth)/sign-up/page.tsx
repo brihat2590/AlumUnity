@@ -29,8 +29,9 @@ const SignUp: React.FC = () => {
       await signUpWithEmail(email, password);
       
       router.push('/sign-in');
-    } catch (err: any) {
-      toast.error(err.message || 'Sign up failed.');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Sign up failed.';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -48,7 +49,7 @@ const SignUp: React.FC = () => {
 
   return (
     <AuthLayout title="Create Account">
-      <p className="text-gray-600 mb-6">
+      <p className="mb-6 text-sm leading-relaxed text-slate-500">
         Join a growing network of learners, leaders, and legacy makers.
       </p>
 
@@ -58,10 +59,10 @@ const SignUp: React.FC = () => {
 
         <div className="relative my-4">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
+            <div className="w-full border-t border-slate-200"></div>
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-white px-4 text-sm text-gray-500">
+            <span className="bg-white px-4 text-xs font-semibold uppercase tracking-wide text-slate-400">
               Or continue with email
             </span>
           </div>
@@ -69,7 +70,7 @@ const SignUp: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">
+            <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="email">
               Email Address
             </label>
             <input
@@ -77,26 +78,26 @@ const SignUp: React.FC = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               placeholder="your@email.com"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">
+            <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="password">
               Password
             </label>
             <input
-              
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               placeholder="enter password"
               required
             />
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-slate-500">
               Must be at least 8 characters long with a number and a symbol.
             </p>
           </div>
@@ -105,15 +106,15 @@ const SignUp: React.FC = () => {
             <input
               id="terms"
               type="checkbox"
-              className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 mt-1"
+              className="mt-1 h-4 w-4 rounded border-slate-300 text-indigo-500 focus:ring-indigo-500"
             />
-            <label htmlFor="terms" className="ml-2 block text-sm text-gray-600">
+            <label htmlFor="terms" className="ml-2 block text-sm text-slate-500">
               I agree to the{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-800">
+              <a href="#" className="font-medium text-indigo-500 transition-colors hover:text-indigo-600">
                 Terms of Service
               </a>{' '}
               and{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-800">
+              <a href="#" className="font-medium text-indigo-500 transition-colors hover:text-indigo-600">
                 Privacy Policy
               </a>
             </label>
@@ -122,16 +123,16 @@ const SignUp: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-medium transition-transform hover:translate-y-[-2px] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="w-full rounded-full bg-indigo-500 px-4 py-3 font-headline text-sm font-bold uppercase tracking-widest text-white shadow-lg shadow-indigo-500/20 transition-all hover:-translate-y-0.5 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-80"
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
       </div>
 
-      <p className="text-sm text-gray-600 text-center mt-4">
+      <p className="mt-4 text-center text-sm text-slate-500">
         Already have an account?{' '}
-        <Link href="/sign-in" className="text-blue-600 hover:text-blue-800 font-medium">
+        <Link href="/sign-in" className="font-semibold text-indigo-500 transition-colors hover:text-indigo-600">
           Sign in
         </Link>
       </p>

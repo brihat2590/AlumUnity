@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, CheckCircle2, FileText, GraduationCap, Network } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2, FileText, GraduationCap, Network } from "lucide-react";
 import { Inter, Manrope } from "next/font/google";
 import Link from "next/link";
 
@@ -147,8 +147,8 @@ export default function Home() {
 
             <div className="absolute -bottom-8 left-6 hidden max-w-[260px] rounded-2xl border border-slate-50 bg-white p-6 shadow-2xl md:block">
               <div className="mb-3 flex items-center gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500/10">
-                  <CheckCircle2 className="h-4 w-4 text-indigo-500" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full ">
+                  <Check className="h-4 w-4 text-indigo-500" />
                 </div>
                 <span className="font-headline whitespace-nowrap text-sm font-bold text-slate-900">Verified Alumni</span>
               </div>
@@ -221,7 +221,7 @@ export default function Home() {
                       key={point}
                       className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 text-sm font-medium text-slate-700"
                     >
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-indigo-500" />
+                      <Check className="h-4 w-4 shrink-0 text-indigo-500" />
                       {point}
                     </div>
                   ))}

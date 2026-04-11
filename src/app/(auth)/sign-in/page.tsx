@@ -29,8 +29,9 @@ const SignIn: React.FC = () => {
       await signInWithEmail(email, password);
       
       router.push('/dashboard');
-    } catch (err: any) {
-      toast.error(err.message || 'Sign in failed');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Sign in failed';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -48,7 +49,7 @@ const SignIn: React.FC = () => {
 
   return (
     <AuthLayout title="Sign In">
-      <p className="text-gray-600 mb-8">
+      <p className="mb-8 text-sm leading-relaxed text-slate-500">
         Welcome back to AlumUnity – where connections never fade.
       </p>
 
@@ -58,10 +59,10 @@ const SignIn: React.FC = () => {
 
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
+            <div className="w-full border-t border-slate-200"></div>
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-white px-4 text-sm text-gray-500">
+            <span className="bg-white px-4 text-xs font-semibold uppercase tracking-wide text-slate-400">
               Or continue with email
             </span>
           </div>
@@ -69,7 +70,7 @@ const SignIn: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-700">
               Email Address
             </label>
             <input
@@ -77,7 +78,7 @@ const SignIn: React.FC = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               placeholder="your@email.com"
               required
             />
@@ -85,10 +86,10 @@ const SignIn: React.FC = () => {
 
           <div className="mb-6">
             <div className="flex items-center justify-between mb-1">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-slate-700">
                 Password
               </label>
-              <a href="#" className="text-xs text-blue-600 hover:text-blue-800">
+              <a href="#" className="text-xs font-medium text-indigo-500 transition-colors hover:text-indigo-600">
                 Forgot password?
               </a>
             </div>
@@ -97,7 +98,7 @@ const SignIn: React.FC = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               placeholder="••••••••"
               required
             />
@@ -106,16 +107,16 @@ const SignIn: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-medium transition-transform hover:translate-y-[-2px] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="w-full rounded-full bg-indigo-500 px-4 py-3 font-headline text-sm font-bold uppercase tracking-widest text-white shadow-lg shadow-indigo-500/20 transition-all hover:-translate-y-0.5 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-80"
           >
             {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
       </div>
 
-      <p className="text-sm text-gray-600 text-center mt-8">
-        Don't have an account?{' '}
-        <Link href="/sign-up" className="text-blue-600 hover:text-blue-800 font-medium">
+      <p className="mt-8 text-center text-sm text-slate-500">
+        Don&apos;t have an account?{' '}
+        <Link href="/sign-up" className="font-semibold text-indigo-500 transition-colors hover:text-indigo-600">
           Sign up
         </Link>
       </p>
