@@ -10,16 +10,17 @@ type AuthButtonProps = {
 const AuthButton: React.FC<AuthButtonProps> = ({ provider, type, onClick }) => {
   const isSignIn = type === 'signin';
   const action = isSignIn ? 'Sign in' : 'Sign up';
+  const isGoogle = provider === 'google';
 
   return (
     <button
       onClick={onClick} // ✅ use the correct prop
-      className="flex items-center justify-center w-full px-4 py-2.5 mb-4 text-sm font-medium transition-all rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2"
-      style={{
-        backgroundColor: provider === 'google' ? 'white' : '#24292e',
-        color: provider === 'google' ? '#5f6368' : 'white',
-        border: provider === 'google' ? '1px solid #dadce0' : 'none',
-      }}
+      className={`mb-4 flex w-full items-center justify-center rounded-full px-4 py-3 text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+        isGoogle
+          ? 'border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 focus:ring-slate-300'
+          : 'bg-slate-900 text-white shadow-md shadow-slate-900/10 hover:bg-slate-800 focus:ring-slate-400'
+      }`}
+      type="button"
     >
       {provider === 'google' ? (
         <svg
