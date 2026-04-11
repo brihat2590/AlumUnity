@@ -137,8 +137,8 @@ const Opportunities = () => {
 
   return (
     <>
-      <div className={`${manrope.variable} ${inter.variable} min-h-screen bg-white text-[#0f172a] antialiased`}>
-        <header className="mx-auto max-w-4xl px-6 pb-24 pt-24 text-center md:pt-32">
+      <div className={`${manrope.variable} ${inter.variable} min-h-screen  text-[#0f172a] antialiased`}>
+        <header className="mx-auto max-w-4xl px-6 pb-24 pt-5 sm:pt-10  text-center">
           <span className="mb-6 inline-block rounded-full border border-indigo-500/20 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-500">
             Exclusive Access
           </span>
@@ -275,32 +275,9 @@ const Opportunities = () => {
           
         </main>
 
-        <footer className="w-full border-t border-slate-50 bg-white px-8 py-24">
-          <div className="mx-auto flex max-w-7xl flex-col items-center justify-between space-y-12 md:flex-row md:space-y-0">
-            <span
-              className="text-2xl font-extrabold tracking-tighter text-[#0f172a]"
-              style={{ fontFamily: "var(--font-manrope)" }}
-            >
-              Alumni Elite
-            </span>
-
-            <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400">
-              © 2026 Editorial Prestige Alumni Network.
-            </p>
-
-            <div className="flex gap-10">
-              <a className="text-[10px] uppercase tracking-[0.2em] text-slate-400 transition-colors hover:text-indigo-500" href="#">
-                Privacy
-              </a>
-              <a className="text-[10px] uppercase tracking-[0.2em] text-slate-400 transition-colors hover:text-indigo-500" href="#">
-                Terms
-              </a>
-              <a className="text-[10px] uppercase tracking-[0.2em] text-slate-400 transition-colors hover:text-indigo-500" href="#">
-                Contact
-              </a>
-            </div>
-          </div>
-        </footer>
+        
+          
+       
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>

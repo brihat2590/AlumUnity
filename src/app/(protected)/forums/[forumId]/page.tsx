@@ -1,172 +1,277 @@
 'use client';
+
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import { getQuestionById } from '@/firebase/questions.controller';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { createQuestion, getAllQuestions, createOrremoveUpvoteForQuestions, createOrremoveDownvoteForQuestions } from '@/firebase/questions.controller';
 import { toast } from 'sonner';
-import { ThumbsDown, ThumbsUpIcon } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowUp } from 'lucide-react';
+import { Inter, Manrope } from 'next/font/google';
 import { useFirebase } from '@/firebase/firebase.config';
+import { getQuestionById, createOrremoveUpvoteForQuestions, createOrremoveDownvoteForQuestions } from '@/firebase/questions.controller';
+import { getUserInfo } from '@/firebase/user.controller';
+import { Button } from '@/components/ui/button';
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  weight: ['400', '600', '700', '800'],
+  variable: '--font-manrope',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-inter',
+});
+
+type ForumUserMeta = {
+  name: string;
+  profilePic: string;
+  role: string;
+};
+
+type ForumReply = {
+  id: string;
+  reply: string;
+  date: string;
+  posted_by?: {
+    name?: string;
+  };
+};
+
+type ForumQuestionDetail = {
+  id: string;
+  question: string;
+  date: string;
+  posted_by: string | { name?: string };
+  upVotes?: string[];
+  downVotes?: string[];
+  replies?: ForumReply[];
+};
+
+const getRelativeTime = (dateInput: string) => {
+  const date = new Date(dateInput);
+  if (Number.isNaN(date.getTime())) {
+    return 'Just now';
+  }
+
+  const diffMs = Date.now() - date.getTime();
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  if (hours < 1) {
+    return 'Now';
+  }
+  if (hours < 24) {
+    return `${hours}h ago`;
+  }
+
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+};
+
+const formatVoteCount = (count: number) => {
+  if (count >= 1000) {
+    const compact = count / 1000;
+    return `${compact >= 10 ? Math.round(compact) : compact.toFixed(1)}k`;
+  }
+  return `${count}`;
+};
 
 export default function ForumDetailPage() {
-  const { forumId } = useParams();
-  const [question, setQuestion] = useState<any>(null);
-  const{loggedInUser} = useFirebase();
-  const [loading, setLoading] = useState(true);
+  const { forumId } = useParams<{ forumId: string }>();
+  const { loggedInUser } = useFirebase();
   const userId = loggedInUser?.uid || '';
 
-  useEffect(() => {
-    if (forumId) {
-      fetchQuestion();
-    }
-  }, [forumId]);
+  const [question, setQuestion] = useState<ForumQuestionDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [poster, setPoster] = useState<ForumUserMeta>({
+    name: 'AlumUnity User',
+    profilePic: '',
+    role: 'AlumUnity User',
+  });
 
   const fetchQuestion = async () => {
+    if (!forumId) {
+      return;
+    }
+
     setLoading(true);
-    const response = await getQuestionById(forumId!);
+    const response = await getQuestionById(forumId);
     if (response.success) {
-      setQuestion(response.question);
+      const fetchedQuestion = response.question as ForumQuestionDetail;
+      setQuestion(fetchedQuestion);
+
+      const postedById = typeof fetchedQuestion.posted_by === 'string' ? fetchedQuestion.posted_by : '';
+      if (postedById) {
+        const user = await getUserInfo(postedById);
+        const userData = user?.data as UserData | undefined;
+        setPoster({
+          name: userData?.name || 'AlumUnity User',
+          profilePic: userData?.profilePic || '',
+          role: userData?.Role || 'AlumUnity User',
+        });
+      } else {
+        setPoster({
+          name: fetchedQuestion.posted_by?.name || 'AlumUnity User',
+          profilePic: '',
+          role: 'AlumUnity User',
+        });
+      }
+    } else {
+      toast.error(response.message || 'Question not found');
+      setQuestion(null);
     }
     setLoading(false);
   };
 
-  if (loading) return (
-    <div className="max-w-3xl mx-auto p-6 text-center text-gray-600">
-      Loading question...
-    </div>
-  );
+  const handleUpvote = async () => {
+    if (!question?.id) {
+      return;
+    }
 
-  if (!question) return (
-    <div className="max-w-3xl mx-auto p-6 text-center text-red-600">
-      Question not found
-      <div className="mt-4">
-        <Link href="/forums">
-          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
-            Back to Forums
-          </Button>
+    const response = await createOrremoveUpvoteForQuestions(question.id, userId);
+    if (response.success) {
+      fetchQuestion();
+    } else {
+      toast.error(`Failed to upvote: ${response.message}`);
+    }
+  };
+
+  const handleDownvote = async () => {
+    if (!question?.id) {
+      return;
+    }
+
+    const response = await createOrremoveDownvoteForQuestions(question.id, userId);
+    if (response.success) {
+      fetchQuestion();
+    } else {
+      toast.error(`Failed to downvote: ${response.message}`);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuestion();
+  }, [forumId]);
+
+  if (loading) {
+    return (
+      <div className={`${manrope.variable} ${inter.variable} min-h-screen bg-white px-6 py-28 text-center text-slate-600`}>
+        Loading discussion...
+      </div>
+    );
+  }
+
+  if (!question) {
+    return (
+      <div className={`${manrope.variable} ${inter.variable} min-h-screen bg-white px-6 py-28 text-center`}>
+        <p className="text-slate-700">Discussion not found.</p>
+        <Link href="/forums" className="mt-6 inline-flex text-[#4647d3] underline underline-offset-4">
+          Back to forums
         </Link>
       </div>
-    </div>
-  );
-//   const handleUpvote = async (questionId: string) => {
-//     const response = await createOrremoveUpvoteForQuestions(questionId, userId);
-//     if (response.success) {
-//       fetchQuestion();
-//     } else {
-//       alert(`Failed to upvote: ${response.message}`);
-//     }
-//   };
+    );
+  }
 
-//   const handleDownvote = async (questionId: string) => {
-//     const response = await createOrremoveDownvoteForQuestions(questionId, userId);
-//     if (response.success) {
-//       fetchQuestion();
-//     } else {
-//       toast.error(`Failed to downvote: ${response.message}`);
-//     }
-//   };
+  const score = (question.upVotes?.length || 0) - (question.downVotes?.length || 0);
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg">
-      <Link href="/forums">
-        <Button variant="ghost" className="mb-6 text-indigo-600 hover:bg-indigo-50">
-          ← Back to Questions
-        </Button>
-      </Link>
+    <div className={`${manrope.variable} ${inter.variable} min-h-screen bg-white text-[#1a1a2e]`}>
+      <main className="mx-auto min-h-screen max-w-3xl px-6 pb-28 pt-10">
+        <Link
+          href="/forums"
+          className="mb-12 inline-flex items-center gap-2 text-sm font-semibold text-[#4647d3] transition-colors hover:text-[#3c3db8]"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to Forum
+        </Link>
 
-      <div className="border-b border-gray-200 pb-6 mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">{question.question}</h1>
-        <div className="flex items-center space-x-4 text-sm text-gray-600">
-          <div className="flex items-center">
-            <UserIcon className="w-4 h-4 mr-1" />
-            <span>{question.posted_by?.name || 'Unknown user'}</span>
-          </div>
-          <div className="flex items-center">
-            <CalendarIcon className="w-4 h-4 mr-1" />
-            <span>
-              {new Date(question.created_at?.seconds * 1000).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="pt-4">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Replies</h2>
-
-        {question.replies?.length > 0 ? (
-          <div className="space-y-6">
-            {question.replies.map((reply: any) => (
-              <div 
-                key={reply.id} 
-                className="p-6 bg-gray-50 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow"
-              >
-                <p className="text-gray-800 mb-4">{reply.reply}</p>
-                <div className="flex items-center space-x-4 text-sm text-gray-600">
-                  <div className="flex items-center">
-                    <UserIcon className="w-4 h-4 mr-1" />
-                    <span>{reply.posted_by?.name || 'Anonymous'}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <CalendarIcon className="w-4 h-4 mr-1" />
-                    <span>
-                      {new Date(reply.date).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                      })}
-                    </span>
-                  </div>
+        <article className="group">
+          <div className="mb-8 flex items-center gap-4">
+            <div className="h-10 w-10 overflow-hidden rounded-full">
+              {poster.profilePic ? (
+                <img alt={poster.name} className="h-full w-full object-cover" src={poster.profilePic} />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-slate-200 text-xs font-semibold text-slate-600">
+                  {poster.name.charAt(0).toUpperCase()}
                 </div>
-                <div className="flex items-center gap-4 mt-3">
-                    <Button
-                      variant={question.upVotes?.includes(userId) ? 'default' : 'outline'}
-                      className="flex items-center gap-2 text-green-600 hover:text-green-700"
-                      onClick={(e) => {
-                       
-                      }}
-                    >
-                      <ThumbsUpIcon className="w-4 h-4" />
-                      {0}
-                    </Button>
-                    <Button
-                    //   variant={question.downVotes?.includes(userId) ? 'default' : 'outline'}
-                      className="flex items-center gap-2 text-red-600 hover:text-red-700"
-                      onClick={(e) => {
-                        
-                      }}
-                    >
-                      <ThumbsDown className="w-4 h-4" />{0}
-                      
-                    </Button>
+              )}
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-[#1a1a2e]" style={{ fontFamily: 'var(--font-manrope)' }}>
+                {poster.name}
+              </h4>
+              <p className="mt-0.5 text-[10px] uppercase tracking-widest text-slate-400">
+                {poster.role} • {getRelativeTime(question.date)}
+              </p>
+            </div>
+          </div>
+
+          <div className="mb-10">
+            <h1
+              className="mb-6 text-3xl font-bold leading-[1.3] text-[#1a1a2e] md:text-5xl"
+              style={{ fontFamily: 'var(--font-manrope)' }}
+            >
+              {question.question}
+            </h1>
+            <p className="text-lg leading-relaxed text-slate-500 opacity-90" style={{ fontFamily: 'var(--font-inter)' }}>
+              Discussion thread from the alumni network. Cast your vote and share a thoughtful response on the thread page.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-5 rounded-full bg-[#4647d3]/[0.06] px-4 py-2.5 w-fit">
+            <Button
+              variant={question.upVotes?.includes(userId) ? 'primary' : 'outline'}
+              className={`h-11 w-11 rounded-full border-0 p-0 transition-all ${
+                question.upVotes?.includes(userId)
+                  ? 'bg-[#4647d3] text-white shadow-[0_12px_25px_-14px_rgba(70,71,211,0.8)]'
+                  : 'bg-white text-[#4647d3]/50 hover:text-[#4647d3]'
+              }`}
+              onClick={handleUpvote}
+            >
+              <ArrowUp className="h-[24px] w-[24px]" />
+            </Button>
+
+            <div className="text-center">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-[#4647d3]/70">Score</p>
+              <span className="text-lg font-extrabold tabular-nums text-[#1a1a2e]" style={{ fontFamily: 'var(--font-manrope)' }}>
+                {formatVoteCount(score)}
+              </span>
+            </div>
+
+            <Button
+              variant={question.downVotes?.includes(userId) ? 'primary' : 'outline'}
+              className={`h-11 w-11 rounded-full border-0 p-0 transition-all ${
+                question.downVotes?.includes(userId)
+                  ? 'bg-[#1a1a2e] text-white shadow-[0_12px_25px_-14px_rgba(26,26,46,0.75)]'
+                  : 'bg-white text-slate-300 hover:text-[#4647d3]'
+              }`}
+              onClick={handleDownvote}
+            >
+              <ArrowDown className="h-[24px] w-[24px]" />
+            </Button>
+          </div>
+
+          <div className="mt-20 h-px w-full bg-gradient-to-r from-transparent via-slate-100 to-transparent" />
+
+          <section className="mt-14">
+            <h2 className="mb-4 text-xl font-bold text-[#1a1a2e]" style={{ fontFamily: 'var(--font-manrope)' }}>
+              Replies
+            </h2>
+            {question.replies && question.replies.length > 0 ? (
+              <div className="space-y-4">
+                {question.replies.map((reply) => (
+                  <div key={reply.id} className="rounded-xl bg-slate-50 p-5">
+                    <p className="text-slate-700">{reply.reply}</p>
+                    <p className="mt-3 text-xs uppercase tracking-wide text-slate-400">
+                      {reply.posted_by?.name || 'AlumUnity User'}
+                    </p>
                   </div>
+                ))}
               </div>
-              
-            ))}
-          </div>
-        ) : (
-          <div className="p-6 text-center text-gray-500 bg-gray-50 rounded-xl">
-            No replies yet. Be the first to respond!
-          </div>
-        )}
-      </div>
+            ) : (
+              <div className="rounded-xl bg-slate-50 p-6 text-sm text-slate-500">No replies yet.</div>
+            )}
+          </section>
+        </article>
+      </main>
     </div>
   );
 }
-
-// Reuse icons from previous component
-const UserIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-  </svg>
-);
-
-const CalendarIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-  </svg>
-);
