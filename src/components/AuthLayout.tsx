@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Inter, Manrope } from 'next/font/google';
-import Logo from './Logo';
+
 
 const inter = Inter({
   subsets: ['latin'],
@@ -74,7 +74,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title }) => {
         
         {/* Auth form section */}
         <div className="w-full p-8 md:w-1/2 md:p-10">
-          <Logo />
+          
           <h2 className="mb-6 font-headline text-3xl font-extrabold tracking-tight text-slate-900">{title}</h2>
           {children}
         </div>

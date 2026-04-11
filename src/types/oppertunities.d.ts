@@ -2,6 +2,8 @@ interface oppertunityData {
     title: string;
     postedBy : string;
     Company: string;
+    companyUrl: string;
+    logoUrl: string;
     type : OppertunityType;
     location: string;
     salary: string;

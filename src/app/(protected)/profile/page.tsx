@@ -158,7 +158,7 @@ const Profile = () => {
           <p className="mx-auto mt-4 max-w-2xl text-slate-600">
             Define your professional legacy within the AlumUnity network with precision and clarity.
           </p>
-          <span className="mt-6 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-indigo-700">
+          <span className="mt-6 inline-flex items-center gap-2 rounded-full   px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-indigo-700">
             Elite Community Member
           </span>
         </header>

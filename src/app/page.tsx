@@ -42,18 +42,18 @@ const featureContent: Record<
     heading: "Run high-trust mentorship journeys at scale",
     subheading:
       "Pair students with mentors based on trajectory fit, and track outcomes through structured goal reviews.",
-    points: ["AI-assisted mentor matching", "Guided goal templates", "Meeting and progress timeline"],
+    points: ["Guidance from experts", "Guided goal templates", "Meeting and progress timeline"],
     cardTitle: "Mentorship hours logged",
-    cardMetric: "126k",
+    cardMetric: "12k",
   },
   resumeAi: {
     badge: "Resume AI Studio",
     heading: "Turn resumes into interview-ready narratives",
     subheading:
       "Get alumni-grade feedback loops with role-specific scoring and ATS readiness suggestions in minutes.",
-    points: ["Role-based resume scoring", "ATS optimization checks", "Version history and comparisons"],
+    points: ["Resume review", "ATS optimization checks", "Version history and comparisons"],
     cardTitle: "Resumes improved this month",
-    cardMetric: "21,940",
+    cardMetric: "120",
   },
 };
 
@@ -296,12 +296,13 @@ export default function Home() {
             </h2>
             <p className="text-lg font-light leading-relaxed text-slate-500">
               AlumUnity isn&apos;t just a platform; it&apos;s a social fabric woven from the threads of academic
-              excellence. We serve over 200 Ivy-league and top-tier institutions globally.
+              excellence. We serve many  top-tier institutions globally.
             </p>
             <div className="flex items-center gap-12 pt-6 grayscale opacity-40 transition-all duration-700 hover:grayscale-0">
               <span className="font-headline text-sm font-black uppercase tracking-tighter opacity-50">Harvard</span>
               <span className="font-headline text-sm font-black uppercase tracking-tighter opacity-50">Stanford</span>
               <span className="font-headline text-sm font-black uppercase tracking-tighter opacity-50">MIT</span>
+               <span className="font-headline text-sm font-black uppercase tracking-tighter opacity-50">JAIN</span>
             </div>
           </div>
         </section>
