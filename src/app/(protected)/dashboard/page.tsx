@@ -5,31 +5,66 @@ import { getLatestThreeEvents } from '@/firebase/event.controller';
 import { getThreeQuestionsWithMostUpvotes } from '@/firebase/questions.controller';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Role } from '@/interfaces/user.interface';
 import { useFirebase } from '@/firebase/firebase.config';
 import { toast } from 'sonner';
+import { FaSpinner } from 'react-icons/fa';
+
+type DashboardEvent = {
+  id: string;
+  title: string;
+  date: string;
+  description: string;
+  location?: string;
+  meet_link?: string;
+};
+
+type DashboardQuestion = {
+  id: string;
+  question: string;
+  posted_by: string;
+  upVotes?: string[];
+};
 
 const Dashboard = () => {
-  const { loggedInUser } = useFirebase();
-    const userId = loggedInUser?.uid || '';
+  const { loggedInUser, authloading } = useFirebase();
+  const userId = loggedInUser?.uid || '';
 
   const [userInfo, setUserInfo] = useState<UserData | null>(null);
-  const [events, setEvents] = useState([]);
-  const [questions, setQuestions] = useState([]);
+  const [events, setEvents] = useState<DashboardEvent[]>([]);
+  const [questions, setQuestions] = useState<DashboardQuestion[]>([]);
   const [userMap, setUserMap] = useState<{ [userId: string]: string }>({});
+  const [isDashboardLoading, setIsDashboardLoading] = useState(true);
 
   useEffect(() => {
+    if (authloading) {
+      return;
+    }
+
+    if (!userId) {
+      setIsDashboardLoading(false);
+      return;
+    }
+
+    let isMounted = true;
+
     const fetchUserInfo = async () => {
       const response = await getUserInfo(userId);
-      if (response.success) {
-        setUserInfo(response.data);
+      if (response.success && response.data) {
+        if (isMounted) {
+          setUserInfo(response.data as UserData);
+        }
+      } else {
+        toast.error(`Failed to fetch user profile: ${response.message}`);
       }
     };
+    
 
     const fetchEvents = async () => {
       const response = await getLatestThreeEvents();
       if (response.success) {
-        setEvents(response.data);
+        if (isMounted) {
+          setEvents((response.data || []) as DashboardEvent[]);
+        }
       }
     };
 
@@ -39,10 +74,10 @@ const Dashboard = () => {
       //   setQuestions(response.questions);
       // }
       if (response.success) {
-        const fetchedQuestions = response.questions;
+        const fetchedQuestions = (response.questions || []) as DashboardQuestion[];
   
         // Extract unique userIds
-        const userIds = [...new Set(fetchedQuestions.map((q: any) => q.posted_by))];
+        const userIds = [...new Set(fetchedQuestions.map((q) => q.posted_by))];
   
         // Fetch user info if not already cached
         const userFetches = await Promise.all(userIds.map(async (id) => {
@@ -61,18 +96,46 @@ const Dashboard = () => {
         userFetches.forEach(({ id, name }) => {
           updatedUserMap[id] = name;
         });
-  
-        setUserMap(updatedUserMap);
-        setQuestions(fetchedQuestions);
+
+        if (isMounted) {
+          setUserMap(updatedUserMap);
+          setQuestions(fetchedQuestions);
+        }
       } else {
         toast.error(`Failed to fetch questions: ${response.message}`);
       }
     };
 
-    fetchUserInfo();
-    fetchEvents();
-    fetchQuestions();
-  }, [userId]);
+    const fetchDashboardData = async () => {
+      setIsDashboardLoading(true);
+      await Promise.all([fetchUserInfo(), fetchEvents(), fetchQuestions()]);
+      if (isMounted) {
+        setIsDashboardLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [authloading, userId]);
+
+  if (authloading || isDashboardLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+              <FaSpinner className="animate-spin text-xl" />
+      </div>
+    );
+  }
+
+  if (!userInfo) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <p className="text-gray-500 text-lg">Unable to load dashboard right now.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
@@ -102,9 +165,9 @@ const Dashboard = () => {
           {/* Profile Details Section */}
           <div className="md:w-2/3 p-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              {userInfo?.name || 'User Name'}
+              {userInfo.name || 'User Name'}
             </h1>
-            <p className="text-gray-600 mb-6">{userInfo?.Bio || 'No bio available'}</p>
+            <p className="text-gray-600 mb-6">{userInfo.Bio || 'No bio available'}</p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div>
