@@ -30,7 +30,7 @@ const Events = () => {
     location: '',
   });
 
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<{id:string}[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false); // State to control dialog visibility
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -86,8 +86,12 @@ const Events = () => {
 
   const fetchEvents = async () => {
     const response = await getAllEvents();
+    if(!response.success){
+      toast.error(`Failed to fetch events: ${response.message}`);
+      return;
+    }
     if (response.success) {
-      setEvents(response.data);
+      setEvents(response.data || []);
     } else {
       toast.error(`Failed to fetch events: ${response.message}`);
     }

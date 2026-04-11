@@ -16,7 +16,7 @@ export const createQuestion = async (question: CreateQuestionParams) => {
             message: "Question created successfully",
             questionId: docRef.id,
         };
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,
@@ -43,7 +43,7 @@ export const getAllQuestions = async () => {
             message: "Questions fetched successfully",
             questions,
         };
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,
@@ -106,7 +106,7 @@ export const getQuestionById = async (questionId: string) => {
                 replies: populatedReplies.filter(reply => reply !== null), // Attach populated replies
             },
         };
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,
@@ -128,7 +128,7 @@ export const updateQuestion = async (questionId: string, questionData: UpdateQue
             success: true,
             message: "Question updated successfully",
         };
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,
@@ -161,7 +161,7 @@ export const createReply = async (reply: CreateReplyParams) => {
             message: "Reply created and question updated successfully",
             replyId: docRef.id,
         };
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,
@@ -210,7 +210,7 @@ export const createOrremoveUpvoteForQuestions = async (questionId: string, userI
                 message: "Upvote added successfully",
             };
         }
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,
@@ -259,7 +259,7 @@ export const createOrremoveDownvoteForQuestions = async (questionId: string, use
                 message: "Downvote added successfully",
             };
         }
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,
@@ -308,7 +308,7 @@ export const createOrremoveUpvoteForReplies = async (replyId: string, userId: st
                 message: "Upvote added successfully",
             };
         }
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,
@@ -357,7 +357,7 @@ export const createOrremoveDownvoteForReplies = async (replyId: string, userId: 
                 message: "Downvote added successfully",
             };
         }
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,
@@ -377,7 +377,7 @@ export const getThreeQuestionsWithMostUpvotes = async () => {
         const questions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
         // Sort questions by upvotes in descending order and get the top 3
-        const sortedQuestions = questions.sort((a, b) => (b.upVotes || []).length - (a.upVotes || []).length).slice(0, 3);
+        const sortedQuestions = questions.sort((a: any, b: any) => (b.upVotes || []).length - (a.upVotes || []).length).slice(0, 3);
 
         // Return success response with the list of top 3 questions
         return {
@@ -385,7 +385,7 @@ export const getThreeQuestionsWithMostUpvotes = async () => {
             message: "Top 3 questions fetched successfully",
             questions: sortedQuestions,
         };
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,

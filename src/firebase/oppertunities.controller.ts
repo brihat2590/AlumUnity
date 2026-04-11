@@ -15,7 +15,7 @@ export const createOpportunity = async (opportunityData: oppertunityData) => {
             message: "Opportunity created successfully",
             docId: docRef.id,
         };
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,
@@ -42,7 +42,7 @@ export const getAllOpportunities = async () => {
             success: true,
             data: opportunities,
         };
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,

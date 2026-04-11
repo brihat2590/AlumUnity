@@ -110,7 +110,7 @@ export default function ForumDetailPage() {
         });
       } else {
         setPoster({
-          name: fetchedQuestion.posted_by?.name || 'AlumUnity User',
+          name: typeof fetchedQuestion.posted_by === 'object' && fetchedQuestion.posted_by !== null ? (fetchedQuestion.posted_by as any).name || 'AlumUnity User' : 'AlumUnity User',
           profilePic: '',
           role: 'AlumUnity User',
         });
@@ -218,7 +218,7 @@ export default function ForumDetailPage() {
 
           <div className="flex items-center gap-5 rounded-full bg-[#4647d3]/[0.06] px-4 py-2.5 w-fit">
             <Button
-              variant={question.upVotes?.includes(userId) ? 'primary' : 'outline'}
+              
               className={`h-11 w-11 rounded-full border-0 p-0 transition-all ${
                 question.upVotes?.includes(userId)
                   ? 'bg-[#4647d3] text-white shadow-[0_12px_25px_-14px_rgba(70,71,211,0.8)]'
@@ -237,7 +237,7 @@ export default function ForumDetailPage() {
             </div>
 
             <Button
-              variant={question.downVotes?.includes(userId) ? 'primary' : 'outline'}
+              
               className={`h-11 w-11 rounded-full border-0 p-0 transition-all ${
                 question.downVotes?.includes(userId)
                   ? 'bg-[#1a1a2e] text-white shadow-[0_12px_25px_-14px_rgba(26,26,46,0.75)]'

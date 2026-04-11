@@ -15,7 +15,7 @@ export const createEvent = async (eventData: EventData) => {
             message: "Event created successfully",
             eventId: docRef.id,
         };
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,
@@ -42,7 +42,7 @@ export const getAllEvents = async () => {
             success: true,
             data: events,
         };
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,
@@ -67,13 +67,13 @@ export const getLatestThreeEvents = async () => {
         }));
 
         // Sort events by date and get the latest three
-        const latestEvents = events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 3);
+        const latestEvents = events.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 3);
 
         return {
             success: true,
             data: latestEvents,
         };
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors and return failure response
         return {
             success: false,

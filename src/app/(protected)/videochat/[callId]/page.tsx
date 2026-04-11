@@ -9,15 +9,20 @@ import {
   SpeakerLayout,
   StreamVideoClient,
 } from "@stream-io/video-react-sdk";
+// @ts-ignore
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import { useFirebase } from "@/firebase/firebase.config";
 import { useParams } from "next/navigation";
 
 export default function VideoChat() {
+  const {callId} = useParams();
+  if(!callId){
+    throw new Error("Call ID is required");
+  }
   const [client, setClient] = useState<StreamVideoClient>();
   const [call, setCall] = useState<Call>();
   const {loggedInUser} = useFirebase();
-  const {callId} = useParams();
+  
 
   // const callId = "csb-" + "randon-call-id";
   const callType = "default";
@@ -54,7 +59,7 @@ export default function VideoChat() {
   useEffect(() => {
     if (!client) return;
 
-    const myCall = client.call(callType, callId);
+    const myCall = client.call(callType, callId as string);
     myCall.join({ create: true }).catch((err) => {
       console.error(`Failed to join the call`, err);
     });

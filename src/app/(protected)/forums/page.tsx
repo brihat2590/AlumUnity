@@ -277,7 +277,7 @@ const Forums = () => {
                   <div className="flex items-center gap-10">
                     <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-2 py-1.5">
                       <Button
-                        variant={question.upVotes?.includes(userId) ? 'primary' : 'outline'}
+                        variant={question.upVotes?.includes(userId) ? 'default' : 'outline'}
                         className={`h-11 w-11 rounded-full border-0 p-0 transition-all ${
                           question.upVotes?.includes(userId)
                             ? 'bg-[#ff6a00] text-white shadow-[0_10px_22px_-14px_rgba(255,106,0,0.9)]'
@@ -303,7 +303,7 @@ const Forums = () => {
                       </div>
 
                       <Button
-                        variant={question.downVotes?.includes(userId) ? 'primary' : 'outline'}
+                        variant={question.downVotes?.includes(userId) ? 'default' : 'outline'}
                         className={`h-11 w-11 rounded-full border-0 p-0 transition-all ${
                           question.downVotes?.includes(userId)
                             ? 'bg-[#6c7fa2] text-white shadow-[0_10px_22px_-14px_rgba(108,127,162,0.8)]'

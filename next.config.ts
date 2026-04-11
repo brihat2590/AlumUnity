@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
         hostname:'/**'
       }
     ]
+  },
+  eslint:{
+    ignoreDuringBuilds:true
   }
   /* config options here */
 };

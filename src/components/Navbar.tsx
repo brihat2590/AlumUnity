@@ -111,7 +111,7 @@ export const Navbar: React.FC = () => {
             ))}
 
             {/* Mobile Get Started Button */}
-            <Button fullWidth onClick={handleGetStarted}>
+            <Button  onClick={handleGetStarted}>
               Get Started
             </Button>
           </div>

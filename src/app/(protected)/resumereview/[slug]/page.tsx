@@ -47,6 +47,11 @@ export default function ResumeReviewDetailPage() {
       setIsLoading(false);
       return;
     }
+    if(!response.data || !response.data.resume||!response.data.resume.resumeUrl){
+      toast.error('Resume not found');
+      setIsLoading(false);
+      return;
+    }
 
     setResume(response.data.resume);
     setComments(response.data.comments || []);
