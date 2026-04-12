@@ -17,6 +17,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AlumUnity",
   description: "Connecting Alumni and Students",
+  icons:{
+    icon:"./favicon_logoai/favicon.ico",
+    apple:"./favicon_logoai/apple-touch-icon.png",
+    other:[
+      { rel:"icon", url:"./favicon_logoai/favicon.ico" },
+      { rel:"apple-touch-icon", url:"./favicon_logoai/apple-touch-icon.png" }
+    ]
+  }
 };
 
 export default function RootLayout({
