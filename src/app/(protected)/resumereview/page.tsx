@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Loader2, UploadCloud, FileText, MessageSquare, ArrowRight, Plus } from 'lucide-react';
+import { Loader2, ArrowRight, Plus, X, Upload, ScrollText, MessageCircleMore, GraduationCap, Sparkles } from 'lucide-react';
 import { useFirebase } from '@/firebase/firebase.config';
 import { createResumePost, getAllResumePosts } from '@/firebase/resume.controller';
 
@@ -182,165 +182,254 @@ export default function ResumeReview() {
     };
 
     return (
-        <section className="relative min-h-screen overflow-hidden bg-slate-50 px-4 py-10 md:px-8 md:py-12">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_8%,rgba(165,180,252,0.16),transparent_38%)]" />
-            <div className="relative mx-auto max-w-7xl space-y-10">
-                <header className="px-1 md:px-2">
+        <section className="relative min-h-screen bg-slate-50 pb-20 selection:bg-indigo-100 selection:text-indigo-900">
+            {/* Background elements */}
+            <div className="absolute inset-x-0 top-0 h-[500px] bg-gradient-to-b from-indigo-50/50 via-indigo-50/20 to-transparent pointer-events-none" />
+            
+            <div className="relative mx-auto max-w-7xl px-4 py-12 md:px-8 lg:py-16 space-y-12">
+                
+                {/* Hero Header */}
+                <header className="mx-auto max-w-4xl px-6 pb-12 pt-5 sm:pt-10 text-center">
+                    <span className="mb-6 inline-block rounded-full border border-indigo-500/20 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-500">
+                        Exclusive Access
+                    </span>
+
                     <h1
-            className="mb-8 text-5xl font-extralight tracking-tight text-[#0f172a] md:text-6xl"
-            style={{ fontFamily: "var(--font-manrope)" }}
-          >
-            The <span className="font-semibold italic">Resume</span> Review
-          </h1>
-                <p
-            className=" max-w-2xl text-lg font-light leading-relaxed text-slate-500"
-            style={{ fontFamily: "var(--font-inter)" }}
-          > Get your resume reviewed by the community. Upload your resume, share it with others, and receive valuable feedback to help you land your dream job.
-          </p>
-                    
-                    
+                        className="mb-8 text-5xl font-extralight tracking-tight text-[#0f172a] md:text-6xl"
+                        style={{ fontFamily: 'var(--font-manrope)' }}
+                    >
+                        The <span className="font-semibold italic">Resume</span> Exchange
+                    </h1>
+
+                    <p
+                        className="mx-auto max-w-2xl text-lg font-light leading-relaxed text-slate-500"
+                        style={{ fontFamily: 'var(--font-inter)' }}
+                    >
+                        An elite collection of resumes curated for the AlumUnity network.
+                        Upload your resume to receive highly valuable, private feedback from our inner circle.
+                    </p>
                 </header>
 
-                <div className="space-y-4">
-                    <div className="flex flex-wrap items-center justify-between gap-3 px-1 md:px-2">
-                        <h2 className="text-lg font-semibold text-slate-900 md:text-xl">Community Resumes</h2>
-                        <div className="flex items-center gap-2">
-                            <span className="rounded-full bg-white/70 px-3 py-1 text-xs text-indigo-700 shadow-[0_8px_24px_-18px_rgba(79,70,229,0.85)] ring-1 ring-indigo-100/70 backdrop-blur">
-                                {resumes.length} published
-                            </span>
-                            <button
-                                type="button"
-                                onClick={() => setShowUploadForm((prev) => !prev)}
-                                className="inline-flex items-center gap-1 rounded-full bg-white/80 px-3 py-1.5 text-xs font-semibold text-indigo-700 shadow-[0_12px_26px_-20px_rgba(79,70,229,0.95)] ring-1 ring-indigo-100/80 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white"
-                            >
-                                <Plus className="h-3.5 w-3.5" /> Review your resume
-                            </button>
+                <div className="space-y-8">
+                    {/* Toolbar */}
+                    <div className="flex flex-col sm:flex-row items-start justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60 sm:items-center md:px-6">
+                        <div className="flex items-center gap-4">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 ring-1 ring-inset ring-indigo-100">
+                                <ScrollText className="h-6 w-6" />
+                            </div>
+                            <div>
+                                <h2 className="text-lg font-bold text-slate-900">Community Resumes</h2>
+                                <p className="text-sm font-medium text-slate-500">
+                                    {isLoadingResumes ? 'Loading...' : `${resumes.length} published for review`}
+                                </p>
+                            </div>
                         </div>
+                        
+                        <button
+                            type="button"
+                            onClick={() => setShowUploadForm(true)}
+                            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm ring-1 ring-indigo-600 transition-all hover:bg-indigo-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                        >
+                            <Plus className="h-4 w-4" strokeWidth={2.5} /> 
+                            Submit Resume
+                        </button>
                     </div>
 
+                    {/* Resumes Grid */}
                     {isLoadingResumes ? (
-                        <div className="rounded-[28px] bg-white/80 p-7 text-sm text-slate-600 shadow-[0_22px_50px_-40px_rgba(79,70,229,0.8)] ring-1 ring-indigo-100/80 backdrop-blur">
-                            Loading resumes...
+                        <div className="flex min-h-[300px] items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-slate-50/50">
+                            <div className="flex flex-col items-center gap-3 text-slate-500">
+                                <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+                                <p className="font-medium">Loading community resumes...</p>
+                            </div>
                         </div>
                     ) : resumes.length === 0 ? (
-                        <div className="rounded-[28px] bg-white/75 p-7 text-sm text-slate-600 shadow-[0_22px_50px_-40px_rgba(79,70,229,0.7)] ring-1 ring-indigo-100/80 backdrop-blur">
-                            No resumes yet. Be the first one to publish and get reviewed.
+                        <div className="flex min-h-[300px] items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-slate-50/50 px-4 text-center">
+                            <div className="flex flex-col items-center gap-3">
+                                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 ring-4 ring-white">
+                                    <Sparkles className="h-8 w-8 text-slate-400" />
+                                </div>
+                                <h3 className="text-lg font-semibold text-slate-900 mt-2">No resumes yet</h3>
+                                <p className="text-slate-500 max-w-sm">Be the first one to publish and get reviewed by the community.</p>
+                                <button 
+                                    onClick={() => setShowUploadForm(true)}
+                                    className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
+                                >
+                                    Upload yours now <ArrowRight className="h-4 w-4" />
+                                </button>
+                            </div>
                         </div>
                     ) : (
-                        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {resumes.map((resume) => (
                                 <Link
                                     href={`/resumereview/${resume.slug}`}
                                     key={resume.id}
-                                    className="group rounded-[28px] bg-white/85 p-6 shadow-[0_26px_56px_-42px_rgba(79,70,229,0.8)] ring-1 ring-indigo-100/75 backdrop-blur transition duration-300 hover:-translate-y-1.5 hover:ring-indigo-200"
+                                    className="luxury-shadow luxury-shadow-hover group flex flex-col justify-between overflow-hidden rounded-2xl bg-white p-8 border border-slate-100 transition-all duration-500 hover:-translate-y-1"
                                 >
-                                    <FileText className="mb-4 h-5 w-5 text-indigo-600/90" />
+                                    <div>
+                                        <div className="mb-6 flex items-start justify-between">
+                                            <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-white ring-1 ring-inset ring-slate-100 shadow-sm transition-colors group-hover:ring-indigo-100">
+                                                <ScrollText className="h-8 w-8 text-indigo-500 transition-colors group-hover:text-indigo-600" strokeWidth={1.5} />
+                                            </div>
+                                            <div className="flex items-center gap-1.5 rounded-full bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600 ring-1 ring-inset ring-slate-200/80 transition-colors group-hover:bg-indigo-50 group-hover:text-indigo-700 group-hover:ring-indigo-100">
+                                                <MessageCircleMore className="h-3.5 w-3.5" />
+                                                {resume.commentsCount || 0}
+                                            </div>
+                                        </div>
 
-                                    <h3 className="line-clamp-2 text-base font-semibold leading-snug text-slate-900">{resume.title}</h3>
-                                    <p className="mt-2 text-xs text-slate-600">by {resume.postedByName}</p>
-                                    <p className="mt-1 text-xs text-slate-500">{formatDate(resume.createdAt)}</p>
+                                        <h3 className="line-clamp-2 min-h-[3.5rem] text-xl font-bold tracking-tight text-[#0f172a] transition-colors duration-300 group-hover:text-indigo-500" style={{ fontFamily: "var(--font-manrope, inherit)" }}>
+                                            {resume.title}
+                                        </h3>
+                                        
+                                        <div className="my-6 flex items-center gap-3">
+                                            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-600 shadow-sm ring-1 ring-white">
+                                                {resume.postedByName?.charAt(0).toUpperCase() || 'U'}
+                                            </div>
+                                            <div className="flex flex-col min-w-0">
+                                                <span className="text-[10px] uppercase tracking-tighter text-slate-400">Curated by</span>
+                                                <span className="truncate text-sm font-bold text-[#0f172a]">
+                                                    {resume.postedByName}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                    <div className="mt-5 flex items-center justify-between text-xs text-slate-600">
-                                        <span className="inline-flex items-center gap-1">
-                                            <MessageSquare className="h-4 w-4" /> {resume.commentsCount || 0} comments
+                                    <div className="mt-auto flex items-center justify-between border-t border-slate-50 pt-6">
+                                        <span className="text-xs font-medium text-slate-500 flex items-center gap-1.5">
+                                           {formatDate(resume.createdAt)}
                                         </span>
-                                        <span className="inline-flex items-center gap-1 font-medium text-indigo-700 transition group-hover:translate-x-1">
-                                            Open thread <ArrowRight className="h-4 w-4" />
+                                        <span className="inline-flex items-center text-indigo-500 transition duration-300 group-hover:translate-x-1">
+                                            <ArrowRight className="h-4 w-4" strokeWidth={2} />
                                         </span>
                                     </div>
                                 </Link>
                             ))}
                         </div>
                     )}
+                </div>
+            </div>
 
-                    {showUploadForm && (
-                        <form
-                            onSubmit={handleUpload}
-                            className="rounded-[30px] bg-white/85 p-6 shadow-[0_30px_65px_-45px_rgba(79,70,229,0.8)] ring-1 ring-indigo-100/80 backdrop-blur md:p-7"
-                        >
-                            <h3 className="mb-5 text-lg font-semibold text-slate-900">Review your resume</h3>
+            {/* Modal Upload Form Overlay */}
+            {showUploadForm && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-slate-900/40 p-4 backdrop-blur-sm sm:p-6 opacity-100 transition-opacity">
+                    <div className="relative w-full max-w-2xl transform rounded-3xl bg-white p-6 text-left align-middle shadow-2xl ring-1 ring-slate-200/50 transition-all sm:p-8">
+                        
+                        <div className="mb-6 flex items-start justify-between">
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-900">Submit your resume</h3>
+                                <p className="mt-1 text-sm text-slate-500">Upload your file to get feedback from the community.</p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setShowUploadForm(false)}
+                                className="rounded-full bg-slate-100 p-2 text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition-colors flex-shrink-0"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
 
-                            <label className="mb-2 block text-sm text-slate-700">Resume title</label>
-                            <input
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                placeholder="Review my resume for Backend Engineering"
-                                className="mb-4 w-full rounded-2xl bg-white/95 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none ring-1 ring-indigo-100 transition focus:ring-2 focus:ring-indigo-200"
-                            />
+                        <form onSubmit={handleUpload} className="space-y-5">
+                            <div>
+                                <label className="mb-2 block text-sm font-semibold text-slate-700">Resume title</label>
+                                <input
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    placeholder="e.g. Seeking Junior Backend Roles - Need Review"
+                                    className="w-full rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-900 border border-slate-200 placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                                />
+                            </div>
 
-                            <label className="mb-2 block text-sm text-slate-700">File (PDF or DOC)</label>
-                            <input
-                                type="file"
-                                accept=".pdf,.doc,.docx"
-                                onChange={(e) => {
-                                    const file = e.target.files?.[0] || null;
-                                    setSelectedFile(file);
-                                    setUploadedResumeData(null);
-                                    if (previewUrl) {
-                                        URL.revokeObjectURL(previewUrl);
-                                    }
-                                    setPreviewUrl(file ? URL.createObjectURL(file) : null);
-                                }}
-                                className="mb-4 block w-full rounded-2xl border border-dashed border-indigo-200/80 bg-white/80 px-4 py-3 text-sm text-slate-700 file:mr-3 file:rounded-full file:border-0 file:bg-indigo-600 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white"
-                            />
+                            <div>
+                                <label className="mb-2 block text-sm font-semibold text-slate-700">Resume File (PDF, DOC)</label>
+                                <div className="relative flex w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-6 py-8 transition-colors hover:bg-slate-100 hover:border-indigo-300 text-center">
+                                    <input
+                                        type="file"
+                                        accept=".pdf,.doc,.docx"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0] || null;
+                                            setSelectedFile(file);
+                                            setUploadedResumeData(null);
+                                            if (previewUrl) {
+                                                URL.revokeObjectURL(previewUrl);
+                                            }
+                                            setPreviewUrl(file ? URL.createObjectURL(file) : null);
+                                        }}
+                                        className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+                                    />
+                                    <Upload className="mb-3 h-8 w-8 text-slate-400" />
+                                    <span className="text-sm font-medium text-slate-700">
+                                        Click to browse or drag and drop your file here
+                                    </span>
+                                    <span className="mt-1 text-xs text-slate-500">
+                                        Max file size: 5MB
+                                    </span>
+                                </div>
+                            </div>
 
                             {selectedFile && (
-                                <p className="mb-4 truncate rounded-xl bg-indigo-50/70 px-3 py-2 text-xs text-indigo-700">
-                                    Selected: {selectedFile.name}
-                                </p>
-                            )}
-
-                            {previewUrl && (
-                                <div className="mb-4 overflow-hidden rounded-2xl bg-white ring-1 ring-indigo-100/80">
-                                    <p className="border-b border-indigo-100/80 bg-indigo-50/70 px-3 py-2 text-xs font-medium text-indigo-700">
-                                        Resume preview
-                                    </p>
-                                    <iframe src={previewUrl} title="Resume preview" className="h-72 w-full" />
+                                <div className="flex items-center gap-3 rounded-xl border border-indigo-100 bg-indigo-50/50 p-3">
+                                    <GraduationCap className="h-8 w-8 text-indigo-500 flex-shrink-0" />
+                                    <div className="min-w-0 flex-1">
+                                        <p className="truncate text-sm font-semibold text-slate-700">
+                                            {selectedFile.name}
+                                        </p>
+                                    </div>
+                                    {!uploadedResumeData?.url && (
+                                        <button
+                                            type="button"
+                                            disabled={isFileUploading}
+                                            onClick={uploadResumeFile}
+                                            className="flex-shrink-0 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-indigo-700 ring-1 ring-inset ring-indigo-200 shadow-sm transition hover:bg-indigo-50 disabled:opacity-50"
+                                        >
+                                            {isFileUploading ? 'Uploading...' : 'Upload File'}
+                                        </button>
+                                    )}
+                                    {uploadedResumeData?.url && (
+                                        <span className="flex-shrink-0 rounded-full bg-green-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-green-700">
+                                            Uploaded
+                                        </span>
+                                    )}
                                 </div>
                             )}
 
-                            {uploadedResumeData?.url && (
-                                <p className="mb-4 rounded-lg bg-green-50 px-3 py-2 text-xs text-green-700">
-                                    File uploaded successfully. Click Publish Resume to list it.
-                                </p>
+                            {previewUrl && (
+                                <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                                    <div className="flex items-center justify-between border-b border-slate-200 bg-slate-100 px-4 py-2">
+                                        <span className="text-xs font-bold uppercase text-slate-600">Preview</span>
+                                    </div>
+                                    <iframe src={previewUrl} title="Resume preview" className="h-[300px] w-full sm:h-[400px]" />
+                                </div>
                             )}
 
-                            <button
-                                type="button"
-                                disabled={!selectedFile || isFileUploading}
-                                onClick={uploadResumeFile}
-                                className="mb-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-indigo-700 ring-1 ring-indigo-200/90 transition hover:-translate-y-0.5 hover:bg-indigo-50/50 disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                                {isFileUploading ? (
-                                    <>
-                                        <Loader2 className="h-4 w-4 animate-spin" /> Uploading file...
-                                    </>
-                                ) : (
-                                    <>
-                                        <UploadCloud className="h-4 w-4" /> Upload Resume File
-                                    </>
-                                )}
-                            </button>
-
-                            <button
-                                type="submit"
-                                disabled={!canSubmit}
-                                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-[0_16px_34px_-20px_rgba(79,70,229,0.75)] transition hover:-translate-y-0.5 hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                                {isUploading ? (
-                                    <>
-                                        <Loader2 className="h-4 w-4 animate-spin" /> Uploading...
-                                    </>
-                                ) : (
-                                    <>
-                                        <UploadCloud className="h-4 w-4" /> Publish Resume
-                                    </>
-                                )}
-                            </button>
+                            <div className="mt-8 flex items-center justify-end gap-3 border-t border-slate-100 pt-5">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowUploadForm(false)}
+                                    className="rounded-xl px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={!canSubmit}
+                                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-indigo-600 transition-all hover:bg-indigo-700 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:ring-slate-300"
+                                >
+                                    {isUploading ? (
+                                        <>
+                                            <Loader2 className="h-4 w-4 animate-spin" /> Publishing...
+                                        </>
+                                    ) : (
+                                        <>
+                                            Publish Review Request
+                                        </>
+                                    )}
+                                </button>
+                            </div>
                         </form>
-                    )}
+                    </div>
                 </div>
-            </div>
+            )}
         </section>
     );
 }
