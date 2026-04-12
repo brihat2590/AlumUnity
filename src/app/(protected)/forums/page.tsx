@@ -280,7 +280,7 @@ const Forums = () => {
                         variant={question.upVotes?.includes(userId) ? 'default' : 'outline'}
                         className={`h-11 w-11 rounded-full border-0 p-0 transition-all ${
                           question.upVotes?.includes(userId)
-                            ? 'bg-[#ff6a00] text-white shadow-[0_10px_22px_-14px_rgba(255,106,0,0.9)]'
+                            ? 'bg-indigo-700 text-white shadow-[0_10px_22px_-14px_rgba(255,106,0,0.9)]'
                             : 'bg-white text-slate-400 hover:text-[#ff6a00]'
                         }`}
                         disabled={Boolean(voteLoading[question.id])}

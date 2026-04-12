@@ -186,14 +186,19 @@ export default function ResumeReview() {
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_8%,rgba(165,180,252,0.16),transparent_38%)]" />
             <div className="relative mx-auto max-w-7xl space-y-10">
                 <header className="px-1 md:px-2">
-                    <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-indigo-500/90">Resume Atelier</p>
-                    <h1 className="max-w-4xl text-3xl font-semibold leading-tight text-slate-900 md:text-5xl">
-                        Publish your resume and receive thoughtful alumni feedback
-                    </h1>
-                    <p className="mt-5 max-w-3xl text-sm leading-relaxed text-slate-600 md:text-base">
-                        Upload your resume, share your profile story, and open the door for valuable guidance from your network.
-                        Every resume card leads to a dedicated review thread.
-                    </p>
+                    <h1
+            className="mb-8 text-5xl font-extralight tracking-tight text-[#0f172a] md:text-6xl"
+            style={{ fontFamily: "var(--font-manrope)" }}
+          >
+            The <span className="font-semibold italic">Resume</span> Review
+          </h1>
+                <p
+            className=" max-w-2xl text-lg font-light leading-relaxed text-slate-500"
+            style={{ fontFamily: "var(--font-inter)" }}
+          > Get your resume reviewed by the community. Upload your resume, share it with others, and receive valuable feedback to help you land your dream job.
+          </p>
+                    
+                    
                 </header>
 
                 <div className="space-y-4">

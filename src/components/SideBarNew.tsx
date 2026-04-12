@@ -74,167 +74,165 @@ export function SidebarNew({ onCollapseChange }: SidebarNewProps) {
         type="button"
         aria-label="Open sidebar"
         onClick={() => setIsMobileOpen(true)}
-        className="fixed left-3 top-3 z-50 inline-flex h-10 w-10 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-700 shadow-sm md:hidden"
+        className="fixed left-4 top-4 z-40 inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm transition-colors hover:bg-slate-100 md:hidden"
       >
-        <Menu className="h-5 w-5" />
+        <Menu className="h-5 w-5 z-40" />
       </button>
 
+      {/* Mobile Overlay */}
       {isMobileOpen && (
-        <button
-          type="button"
+        <div
           aria-label="Close sidebar overlay"
           onClick={() => setIsMobileOpen(false)}
-          className="fixed inset-0 z-40 bg-black/40 md:hidden"
+          className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm transition-opacity md:hidden"
         />
       )}
 
-    <aside
-      className={cn(
-        'fixed left-0 top-0 z-50 flex min-h-screen w-[250px] shrink-0 flex-col overflow-hidden border-r border-gray-200 bg-white transition-all duration-300 md:z-30',
-        isMobileOpen ? 'translate-x-0' : '-translate-x-full',
-        'md:translate-x-0',
-        isCollapsed ? 'md:w-[80px]' : 'md:w-[250px]'
-      )}
-    >
-      {/* Header */}
-      <div className="flex items-center p-4 border-b border-gray-200">
-        <div className="flex items-center flex-1">
-          <div className="w-8 h-8 rounded flex items-center justify-center mr-3 relative overflow-hidden">
-            {/* <svg
-              viewBox="0 0 24 24"
-              className="w-5 h-5 relative z-10"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path className="text-purple-600" d="M12 2L3 9l9 7 9-7-9-7z" />
-              <path className="text-purple-500" d="M3 9v7l9 7 9-7V9" />
-              <path className="text-purple-400" d="M12 16l-9-7 9-7 9 7-9 7z" />
-            </svg>
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-purple-600/20 animate-[glow_3s_ease-in-out_infinite]" /> */}
-            <div className="relative flex items-center justify-center">
-              <Zap 
-                className="h-8 w-8 text-indigo-600 animate-pulse z-10" 
-                strokeWidth={2.5} 
-              />
-              <div className="absolute h-8 w-8 bg-indigo-500/20 rounded-full blur-md animate-pulse" />
-            </div>
-          </div>
-          {!isCollapsed && (
-            <div className="transition-opacity duration-300">
-              <h1 className="font-semibold text-xl">AlumUnity</h1>
-              <p className="text-sm text-gray-500">Connect • Collaborate</p>
-            </div>
-          )}
-        </div>
-        <button
-          type="button"
-          onClick={() => setIsCollapsed((prev) => !prev)}
-          className="hidden h-8 w-8 items-center justify-center rounded-md border border-transparent text-gray-700 transition-colors hover:bg-gray-100 md:inline-flex"
-          aria-label="Toggle sidebar collapse"
-        >
-          <ChevronLeft
-            className={cn('h-4 w-4 transition-transform', isCollapsed && 'rotate-180')}
-          />
-        </button>
-        <button
-          type="button"
-          onClick={() => setIsMobileOpen(false)}
-          className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-transparent text-gray-700 transition-colors hover:bg-gray-100 md:hidden"
-          aria-label="Close sidebar"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 p-3">
-        {menuItems.map(({ icon: Icon, label, path }) => (
-          <Link href={path} key={label}>
-            <Button
-              variant="outline"
-              size="sm"
-              className={cn(
-                'my-2 mb-2 w-full justify-start gap-3 border-transparent bg-transparent',
-                !isCollapsed ? 'px-4' : 'px-0 justify-center',
-                pathname === path
-                  ? 'bg-gradient-to-r from-purple-500/10 to-purple-600/10 text-purple-700'
-                  : 'hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-purple-600/10 hover:text-purple-700  '
-              )}
-            >
-              <Icon
-                className={cn(
-                  'h-5 w-5',
-                  pathname === path ? 'text-purple-600' : 'text-gray-500'
-                )}
-              />
-              {!isCollapsed && <span>{label}</span>}
-            </Button>
-          </Link>
-        ))}
-      </nav>
-
-      {/* Footer */}
-
-      
-        <div className="border-t p-2 ">
-          <div
-            className={`flex items-center ${
-              isCollapsed ? 'justify-center' : 'space-x-3'
-            } mb-4 transition-all duration-150`}
-          >
-            {loggedInUser?.photoURL ? (
-              <img
-                src={loggedInUser.photoURL}
-                alt="User avatar"
-                className="w-10 h-10 rounded-full object-cover transition-all duration-150"
-              />
-            ) : (
-              <button
-                className="w-10 h-10 rounded-full bg-white text-blue-600 font-bold text-lg flex items-center justify-center border border-blue-200 shadow-sm hover:shadow-md hover:ring-2 hover:ring-blue-400/50 transition-all duration-200"
-                aria-label="User"
-                title={loggedInUser?.email || 'User'}
-              >
-                {loggedInUser?.email?.split('@')[0]?.charAt(0).toUpperCase()}
-              </button>
-
-            )}
-            <div
-              className={`${
-                isCollapsed ? 'max-w-0 opacity-0' : 'max-w-[160px] opacity-100'
-              } transition-all duration-150 ease-linear overflow-hidden`}
-            >
-              
-              <p className="text-sm text-gray-500 truncate">{loggedInUser?.email}</p>
-            </div>
-          </div>
-        </div>
-
-      <div className="p-2 border-t border-gray-200">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={logoutHandler}
-          className={cn(
-            'w-full justify-start gap-3 border-transparent bg-transparent',
-            !isCollapsed ? 'px-4' : 'px-0 justify-center',
-            pathname === '/logout'
-              ? 'bg-gradient-to-r from-purple-500/10 to-purple-600/10 text-purple-700'
-                : 'hover:bg-gradient-to-r hover:from-red-600/10 hover:to-red-700/10 hover:text-purple-700'
-          )}
-        >
-          <LogOut
+      <aside
+        className={cn(
+          'fixed left-0 top-0 z-50 flex h-dvh shrink-0 flex-col border-r border-slate-200 bg-white/80 backdrop-blur-xl transition-all duration-300 ease-in-out md:z-30',
+          isMobileOpen ? 'translate-x-0 cursor-default' : '-translate-x-full',
+          'md:translate-x-0',
+          isCollapsed ? 'w-[80px]' : 'w-[260px]',
+          'shadow-sm'
+        )}
+      >
+        {/* Header */}
+        <div className="flex h-16 items-center justify-between border-b border-slate-200/60 px-4">
+          <Link
+            href="/dashboard"
             className={cn(
-              'h-5 w-5',
-              pathname === '/logout' ? 'text-purple-600' : 'text-gray-500'
+              'flex items-center gap-3 transition-opacity duration-300',
+              isCollapsed && 'mx-auto'
             )}
-          />
-          {!isCollapsed && <span>Logout</span>}
-        </Button>
-      </div>
-    </aside>
+          >
+            <div className="relative flex h-8 w-8 items-center justify-center rounded-xl text-indigo-600 ">
+              <Zap className="h-5 w-5" strokeWidth={2.5} />
+            </div>
+            {!isCollapsed && (
+              <div className="flex flex-col">
+                <span className="font-semibold tracking-tight text-slate-900">AlumUnity</span>
+                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                  Connect &bull; Collaborate
+                </span>
+              </div>
+            )}
+          </Link>
+          <button
+            type="button"
+            onClick={() => setIsCollapsed((prev) => !prev)}
+            className="hidden h-8 w-8 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-colors hover:bg-slate-100 md:inline-flex"
+            aria-label="Toggle sidebar collapse"
+          >
+            <ChevronLeft
+              className={cn('h-4 w-4 transition-transform duration-300', isCollapsed && 'rotate-180')}
+            />
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsMobileOpen(false)}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-colors hover:bg-slate-100 md:hidden"
+            aria-label="Close sidebar"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        {/* Navigation */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 py-4 custom-scrollbar">
+          <nav className="flex flex-col gap-1.5">
+            {menuItems.map(({ icon: Icon, label, path }) => {
+              const isActive = pathname === path;
+              return (
+                <Link href={path} key={label} className="outline-none">
+                  <div
+                    className={cn(
+                      'group relative flex h-10 items-center rounded-lg px-3 transition-all duration-200',
+                      isActive
+                        ? 'bg-indigo-50 text-indigo-700 font-medium shadow-sm ring-1 ring-inset ring-indigo-500/20'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',
+                      isCollapsed && 'justify-center px-0'
+                    )}
+                  >
+                    <Icon
+                      className={cn(
+                        'h-5 w-5 shrink-0 transition-colors duration-200',
+                        isActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600'
+                      )}
+                    />
+                    {!isCollapsed && (
+                      <span className="ml-3 truncate text-sm">{label}</span>
+                    )}
+
+                    {/* Tooltip for collapsed state */}
+                    {isCollapsed && (
+                      <div className="absolute left-full top-1/2 ml-2 -translate-y-1/2 rounded-md bg-slate-800 px-2 py-1 text-xs font-medium text-white opacity-0 pointer-events-none transition-all duration-200 group-hover:opacity-100 whitespace-nowrap z-50 shadow-md">
+                        {label}
+                        <div className="absolute top-1/2 right-full -translate-y-1/2 border-4 border-transparent border-r-slate-800"></div>
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* User Profile Section */}
+        <div className="mt-auto border-t border-slate-200/60 p-3">
+          <div
+            className={cn(
+              'flex items-center rounded-xl bg-slate-50 p-2 border border-slate-100 transition-all duration-300',
+              isCollapsed ? 'justify-center flex-col gap-2 bg-transparent border-none p-0' : 'gap-3 mb-2'
+            )}
+          >
+            <div className="relative shrink-0">
+              {loggedInUser?.photoURL ? (
+                <img
+                  src={loggedInUser.photoURL}
+                  alt="User avatar"
+                  className="h-9 w-9 rounded-full object-cover ring-2 ring-white shadow-sm transition-transform duration-300 hover:scale-105"
+                />
+              ) : (
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 text-sm font-semibold text-indigo-700 ring-2 ring-white shadow-sm">
+                  {loggedInUser?.email?.charAt(0).toUpperCase() || <User className="h-4 w-4" />}
+                </div>
+              )}
+              <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white" />
+            </div>
+
+            {!isCollapsed && (
+              <div className="flex min-w-0 flex-1 flex-col overflow-hidden leading-tight">
+                <span className="truncate text-sm font-semibold text-slate-900">
+                  {loggedInUser?.displayName || 'User Account'}
+                </span>
+                <span className="truncate text-xs text-slate-500">
+                  {loggedInUser?.email}
+                </span>
+              </div>
+            )}
+          </div>
+          
+          <button
+            onClick={logoutHandler}
+            className={cn(
+              'w-full group relative flex h-10 items-center justify-center rounded-lg transition-all duration-200 text-slate-600 hover:bg-red-50 hover:text-red-600',
+              !isCollapsed && 'justify-start px-3'
+            )}
+          >
+            <LogOut className="h-5 w-5 shrink-0 transition-colors duration-200 text-slate-400 group-hover:text-red-500" />
+            {!isCollapsed && <span className="ml-3 text-sm font-medium">Log out</span>}
+            
+            {/* Tooltip for collapsed state */}
+            {isCollapsed && (
+              <div className="absolute left-full top-1/2 ml-2 -translate-y-1/2 rounded-md bg-slate-800 px-2 py-1 text-xs font-medium text-white opacity-0 pointer-events-none transition-all duration-200 group-hover:opacity-100 whitespace-nowrap z-50 shadow-md">
+                Log out
+                <div className="absolute top-1/2 right-full -translate-y-1/2 border-4 border-transparent border-r-slate-800"></div>
+              </div>
+            )}
+          </button>
+        </div>
+      </aside>
     </>
   );
 }
