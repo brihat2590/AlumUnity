@@ -5,6 +5,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        dashboard: {
+          primary: '#4647d3',
+          'on-surface': '#302950',
+          'on-surface-variant': '#5e5680',
+          'surface-container-low': '#f4eeff',
+          'surface-container': '#ece4ff',
+          'outline-variant': '#b0a7d6',
+          outline: '#79719d',
+        },
         primary: {
           50: '#eef2ff',
           100: '#e0e7ff',
