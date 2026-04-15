@@ -12,12 +12,12 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createOpportunity, getAllOpportunities } from "@/firebase/oppertunities.controller";
+import { createOpportunity, getAllOpportunities, updateOpportunity } from "@/firebase/oppertunities.controller";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useFirebase } from "@/firebase/firebase.config";
 import { getUserInfo } from "@/firebase/user.controller";
-import { ArrowDown, Globe, MapPin, Wallet, BriefcaseBusiness } from "lucide-react";
+import { ArrowDown, Globe, MapPin, Wallet, BriefcaseBusiness, Edit2 } from "lucide-react";
 import { Inter, Manrope } from "next/font/google";
 
 const manrope = Manrope({
@@ -57,6 +57,7 @@ const Opportunities = () => {
   const userId = loggedInUser?.uid || "";
 
   const [opportunityData, setOpportunityData] = useState(initialOpportunityData);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [opportunities, setOpportunities] = useState<OpportunityItem[]>([]);
   const [userMap, setUserMap] = useState<Record<string, { name: string; profilePic?: string }>>({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -64,6 +65,28 @@ const Opportunities = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setOpportunityData({ ...opportunityData, [name]: value });
+  };
+
+  const openAddDialog = () => {
+    setOpportunityData(initialOpportunityData);
+    setEditingId(null);
+    setIsDialogOpen(true);
+  };
+
+  const openEditDialog = (opp: OpportunityItem) => {
+    setOpportunityData({
+      title: opp.title || "",
+      Company: opp.Company || "",
+      companyUrl: opp.companyUrl || "",
+      logoUrl: opp.logoUrl || "",
+      type: (opp.type || "") as any,
+      location: opp.location || "",
+      salary: opp.salary || "",
+      applicationLink: opp.applicationLink || "",
+      vacancy: opp.vacancy || "",
+    });
+    setEditingId(opp.id);
+    setIsDialogOpen(true);
   };
 
   const handleSaveOpportunity = async () => {
@@ -87,15 +110,28 @@ const Opportunities = () => {
       type: opportunityData.type,
       postedBy: userId,
     };
-    const response = await createOpportunity(data);
 
-    if (response.success) {
-      toast.success("Opportunity created successfully!");
-      fetchOpportunities();
-      setOpportunityData(initialOpportunityData);
-      setIsDialogOpen(false);
+    if (editingId) {
+      const response = await updateOpportunity(editingId, data);
+      if (response.success) {
+        toast.success("Opportunity updated successfully!");
+        fetchOpportunities();
+        setOpportunityData(initialOpportunityData);
+        setEditingId(null);
+        setIsDialogOpen(false);
+      } else {
+        toast.error(`Failed to update opportunity: ${response.message}`);
+      }
     } else {
-      toast.error(`Failed to create opportunity: ${response.message}`);
+      const response = await createOpportunity(data);
+      if (response.success) {
+        toast.success("Opportunity created successfully!");
+        fetchOpportunities();
+        setOpportunityData(initialOpportunityData);
+        setIsDialogOpen(false);
+      } else {
+        toast.error(`Failed to create opportunity: ${response.message}`);
+      }
     }
   };
 
@@ -255,13 +291,24 @@ const Opportunities = () => {
                       </div>
                     </div>
 
-                    <Link
-                      href={opportunity.applicationLink}
-                      target="_blank"
-                      className="text-xs font-bold uppercase tracking-widest text-indigo-500 transition-transform hover:translate-x-1"
-                    >
-                      Details
-                    </Link>
+                    <div className="flex items-center gap-4">
+                      {opportunity.postedBy === userId && (
+                        <button
+                          onClick={() => openEditDialog(opportunity)}
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-indigo-600 transition-colors"
+                          title="Edit Opportunity"
+                        >
+                          <Edit2 size={14} />
+                        </button>
+                      )}
+                      <Link
+                        href={opportunity.applicationLink}
+                        target="_blank"
+                        className="text-xs font-bold uppercase tracking-widest text-indigo-500 transition-transform hover:translate-x-1"
+                      >
+                        Details
+                      </Link>
+                    </div>
                   </div>
                 </article>
               ))
@@ -281,22 +328,24 @@ const Opportunities = () => {
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="fixed bottom-12 right-12 z-50 h-16 w-16 rounded-full bg-[#0f172a] text-white shadow-2xl transition-transform hover:scale-110 active:scale-95">
+            <Button onClick={openAddDialog} className="fixed bottom-12 right-12 z-50 h-16 w-16 rounded-full bg-[#0f172a] text-white shadow-2xl transition-transform hover:scale-110 active:scale-95">
               +
             </Button>
           </DialogTrigger>
 
-          <DialogContent className="max-h-[90vh] overflow-y-auto rounded-2xl border-slate-100 p-8 sm:max-w-[620px]">
+          <DialogContent className="bg-white max-h-[90vh] overflow-y-auto rounded-2xl border-slate-100 p-8 sm:max-w-[620px]">
             <DialogHeader>
               <DialogTitle
                 className="text-2xl font-bold text-[#0f172a]"
                 style={{ fontFamily: "var(--font-manrope)" }}
               >
-                Add Opportunity
+                {editingId ? "Edit Opportunity" : "Add Opportunity"}
               </DialogTitle>
 
               <DialogDescription className="text-slate-500">
-                Fill in the opportunity details. Please include the company URL so the listing looks more complete and polished.
+                {editingId 
+                  ? "Update the details for this opportunity." 
+                  : "Fill in the opportunity details. Please include the company URL so the listing looks more complete and polished."}
               </DialogDescription>
             </DialogHeader>
 
@@ -383,7 +432,7 @@ const Opportunities = () => {
 
             <DialogFooter>
               <Button type="button" onClick={handleSaveOpportunity} className="bg-indigo-600 text-white hover:bg-indigo-700">
-                Save Opportunity
+                {editingId ? "Update Opportunity" : "Save Opportunity"}
               </Button>
             </DialogFooter>
           </DialogContent>

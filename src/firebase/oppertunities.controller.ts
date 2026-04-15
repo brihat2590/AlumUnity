@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { firebasedb } from "./firebase.config";
 
 export const createOpportunity = async (opportunityData: oppertunityData) => {
@@ -20,6 +20,23 @@ export const createOpportunity = async (opportunityData: oppertunityData) => {
         return {
             success: false,
             message: `Failed to create opportunity: ${error.message}`,
+        };
+    }
+}
+
+export const updateOpportunity = async (docId: string, opportunityData: Partial<oppertunityData>) => {
+    try {
+        const docRef = doc(firebasedb, 'opportunities', docId);
+        await updateDoc(docRef, opportunityData);
+        
+        return {
+            success: true,
+            message: "Opportunity updated successfully",
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            message: `Failed to update opportunity: ${error.message}`,
         };
     }
 }

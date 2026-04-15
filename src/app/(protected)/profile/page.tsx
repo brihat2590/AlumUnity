@@ -184,7 +184,7 @@ const Profile = () => {
               </div>
 
               <label className="mt-6 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Image URL
+                Image URL (HOSTED EXTERNALLY)
               </label>
               <input
                 type="text"
