@@ -102,44 +102,46 @@ const Events = () => {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto p-6 md:p-8 bg-white min-h-screen">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
-        <div>
-          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Events</h2>
-          <p className="text-gray-500 mt-1">Discover and join upcoming community events.</p>
+    <div className="max-w-5xl mx-auto px-6 py-12 md:px-8 min-h-screen font-sans">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-gray-100 pb-8">
+        <div className="space-y-1">
+          <h1
+            className="mb-8 text-5xl font-extralight tracking-tight text-[#0f172a] md:text-6xl"
+            style={{ fontFamily: "var(--font-manrope)" }}
+          >
+            The <span className="font-semibold italic">Events</span> 
+          </h1>
+          <p className="text-gray-500 text-sm font-light">Discover and join upcoming events scheduled for alumni and students.</p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-black text-white hover:bg-gray-800 shadow-sm transition-all duration-200">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-              </svg>
+            <Button className="bg-black text-white hover:bg-gray-900 rounded-md px-5 py-2.5 text-sm font-medium transition-colors">
               Create New Event
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px] rounded-xl bg-white border border-gray-100 shadow-2xl">
-            <DialogHeader className="pb-4 border-b border-gray-100">
-              <DialogTitle className="text-xl font-bold text-gray-900">Add New Event</DialogTitle>
-              <DialogDescription className="text-gray-500 mt-1.5">
-                Fill in the details to host a new event for the community.
+          <DialogContent className="sm:max-w-[480px] rounded-lg bg-white border border-gray-200 shadow-xl p-0">
+            <DialogHeader className="px-6 py-5 border-b border-gray-100">
+              <DialogTitle className="text-lg font-medium text-gray-900">Add New Event</DialogTitle>
+              <DialogDescription className="text-gray-500 text-sm mt-1">
+                Fill in the details to host a new event.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-5 py-6">
-              <div className="space-y-2">
-                <Label htmlFor="title" className="text-sm font-medium text-gray-700">
+            <div className="grid gap-5 px-6 py-6">
+              <div className="space-y-1.5">
+                <Label htmlFor="title" className="text-xs font-semibold text-gray-900 uppercase tracking-wider">
                   Event Title
                 </Label>
                 <Input
                   id="title"
                   name="title"
-                  placeholder="e.g. Annual Alumni Meetup 2026"
+                  placeholder="Annual Alumni Meetup 2026"
                   value={eventData.title}
                   onChange={handleChange}
-                  className="w-full border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black focus:border-transparent transition-colors"
+                  className="w-full border-gray-200 rounded-md shadow-sm focus:ring-1 focus:ring-black focus:border-black transition-all text-sm h-10"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="description" className="text-sm font-medium text-gray-700">
+              <div className="space-y-1.5">
+                <Label htmlFor="description" className="text-xs font-semibold text-gray-900 uppercase tracking-wider">
                   Description
                 </Label>
                 <textarea
@@ -148,13 +150,13 @@ const Events = () => {
                   placeholder="What is this event about?"
                   value={eventData.description}
                   onChange={handleChange}
-                  className="w-full border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black focus:border-transparent rounded-lg px-3 py-2 outline-none transition-colors resize-none"
-                  rows={4}
+                  className="w-full border border-gray-200 rounded-md shadow-sm focus:ring-1 focus:ring-black focus:border-black transition-all px-3 py-2 text-sm outline-none resize-none"
+                  rows={3}
                 ></textarea>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="space-y-2">
-                  <Label htmlFor="date" className="text-sm font-medium text-gray-700">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-1.5 ">
+                  <Label htmlFor="date" className="text-xs font-semibold text-gray-900 uppercase tracking-wider">
                     Date & Time
                   </Label>
                   <Input
@@ -163,11 +165,11 @@ const Events = () => {
                     type="datetime-local"
                     value={eventData.date}
                     onChange={handleChange}
-                    className="w-full border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black focus:border-transparent transition-colors"
+                    className="w-full border-gray-200 rounded-md shadow-sm focus:ring-1 focus:ring-black focus:border-black transition-all text-sm h-10 px-2 "
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="location" className="text-sm font-medium text-gray-700">
+                <div className="space-y-1.5">
+                  <Label htmlFor="location" className="text-xs font-semibold text-gray-900 uppercase tracking-wider">
                     Location
                   </Label>
                   <Input
@@ -176,13 +178,13 @@ const Events = () => {
                     placeholder="e.g. Main Hall"
                     value={eventData.location}
                     onChange={handleChange}
-                    className="w-full border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black focus:border-transparent transition-colors"
+                    className="w-full border-gray-200 rounded-md shadow-sm focus:ring-1 focus:ring-black focus:border-black transition-all text-sm h-10"
                   />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="meet_link" className="text-sm font-medium text-gray-700">
-                  Virtual Meeting Link (Optional)
+              <div className="space-y-1.5">
+                <Label htmlFor="meet_link" className="text-xs font-semibold text-gray-900 uppercase tracking-wider">
+                  Virtual Link (Optional)
                 </Label>
                 <Input
                   id="meet_link"
@@ -190,26 +192,26 @@ const Events = () => {
                   placeholder="https://meet.google.com/..."
                   value={eventData.meet_link}
                   onChange={handleChange}
-                  className="w-full border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black focus:border-transparent transition-colors"
+                  className="w-full border-gray-200 rounded-md shadow-sm focus:ring-1 focus:ring-black focus:border-black transition-all text-sm h-10"
                 />
               </div>
             </div>
-            <DialogFooter className="pt-4 border-t border-gray-100 sm:justify-end">
+            <div className="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex justify-end gap-3 rounded-b-lg">
               <Button
-                variant="outline"
+                variant="ghost"
                 onClick={() => setIsDialogOpen(false)}
-                className="mr-2 text-gray-600 border-gray-200 hover:bg-gray-50"
+                className="text-gray-600 hover:bg-gray-100 hover:text-gray-900 text-sm font-medium rounded-md px-4"
               >
                 Cancel
               </Button>
               <Button
                 type="button"
                 onClick={handleSaveEvent}
-                className="bg-black hover:bg-gray-800 text-white shadow-sm"
+                className="bg-black hover:bg-gray-900 text-white shadow-sm text-sm font-medium rounded-md px-5"
               >
                 Save Event
               </Button>
-            </DialogFooter>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
@@ -217,51 +219,45 @@ const Events = () => {
       {/* Section to view all events */}
       <div className="mt-8">
         {events.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {events.map((event: any) => (
               <div
                 key={event.id}
-                className="group flex flex-col justify-between bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-300 hover:shadow-xl transition-all duration-300"
+                className="group flex flex-col justify-between bg-white border border-gray-200 rounded-lg hover:border-gray-400 transition-colors duration-200"
               >
-                <div className="p-6 flex-grow">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+                <div className="p-6 flex-grow flex flex-col">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {new Date(event.date).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
+                    </span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-600">
                       Upcoming
-                    </div>
+                    </span>
                   </div>
-                  <h4 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-black transition-colors">{event.title}</h4>
-                  <p className="text-gray-500 text-sm mb-6 line-clamp-3">
+                  
+                  <h4 className="text-xl font-medium text-gray-900 mb-2 line-clamp-2 leading-tight">{event.title}</h4>
+                  <p className="text-gray-500 text-sm mb-6 line-clamp-3 font-light leading-relaxed flex-grow">
                     {event.description}
                   </p>
                   
-                  <div className="space-y-3 mt-auto">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span className="font-medium text-gray-900">{new Date(event.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                      <span className="mx-2 text-gray-300">•</span>
+                  <div className="space-y-2 mt-auto pt-4 border-t border-gray-100/50">
+                    <div className="flex items-center text-sm text-gray-600 font-light">
+                      <span className="w-16 font-medium text-gray-900 text-xs uppercase tracking-wide">Time</span>
                       <span>{new Date(event.date).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
                     
                     {event.location && (
-                      <div className="flex items-center text-sm text-gray-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        <span>{event.location}</span>
+                      <div className="flex items-center text-sm text-gray-600 font-light">
+                        <span className="w-16 font-medium text-gray-900 text-xs uppercase tracking-wide">Where</span>
+                        <span className="truncate">{event.location}</span>
                       </div>
                     )}
                   </div>
                 </div>
 
                 {event.meet_link && (
-                  <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
+                  <div className="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between rounded-b-lg">
+                    <div className="flex items-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Virtual
                     </div>
                     <ConfirmJoinLink meetLink={event.meet_link} />
@@ -271,12 +267,12 @@ const Events = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-            <svg xmlns="http://www.w3.org/2000/svg" className="mx-auto h-12 w-12 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">No upcoming events</h3>
-            <p className="text-gray-500 max-w-sm mx-auto">There are no events scheduled at the moment. Create one to get started!</p>
+          <div className="text-center py-24 bg-white rounded-lg border border-gray-200 flex flex-col items-center justify-center">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No upcoming events</h3>
+            <p className="text-gray-500 text-sm font-light mb-6">There are no events scheduled at the moment.</p>
+            <Button onClick={() => setIsDialogOpen(true)} variant="outline" className="text-sm font-medium border-gray-300 rounded-md">
+              Create an event
+            </Button>
           </div>
         )}
       </div>

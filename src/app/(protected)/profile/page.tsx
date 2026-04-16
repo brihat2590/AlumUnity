@@ -154,7 +154,12 @@ const Profile = () => {
     <main className="min-h-screen bg-slate-50 px-4 py-12 md:px-8 lg:px-12">
       <div className="mx-auto max-w-5xl">
         <header className="mb-12 text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">Edit Profile</h1>
+          <h1
+            className="mb-8 text-5xl font-extralight tracking-tight text-[#0f172a] md:text-6xl"
+            style={{ fontFamily: "var(--font-manrope)" }}
+          >
+            Edit <span className="font-semibold italic">Profile</span> 
+          </h1>
           <p className="mx-auto mt-4 max-w-2xl text-slate-600">
             Define your professional legacy within the AlumUnity network with precision and clarity.
           </p>
