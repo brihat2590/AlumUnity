@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { useFirebase } from "@/firebase/firebase.config";
 import { getUserInfo } from "@/firebase/user.controller";
 import { ArrowDown, Globe, MapPin, Wallet, BriefcaseBusiness, Edit2 } from "lucide-react";
+import { FaSpinner } from "react-icons/fa";
 import { Inter, Manrope } from "next/font/google";
 
 const manrope = Manrope({
@@ -59,6 +60,7 @@ const Opportunities = () => {
   const [opportunityData, setOpportunityData] = useState(initialOpportunityData);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [opportunities, setOpportunities] = useState<OpportunityItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [userMap, setUserMap] = useState<Record<string, { name: string; profilePic?: string }>>({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -136,34 +138,39 @@ const Opportunities = () => {
   };
 
   const fetchOpportunities = async () => {
-    const response = await getAllOpportunities();
+    setIsLoading(true);
+    try {
+      const response = await getAllOpportunities();
 
-    if (response.success) {
-      const fetchedOpportunities = (response.data ?? []) as OpportunityItem[];
-      setOpportunities(fetchedOpportunities);
+      if (response.success) {
+        const fetchedOpportunities = (response.data ?? []) as OpportunityItem[];
+        setOpportunities(fetchedOpportunities);
 
-      const uniquePosterIds = [...new Set(fetchedOpportunities.map((item) => item.postedBy).filter(Boolean))];
-      if (uniquePosterIds.length) {
-        const posterDetails = await Promise.all(
-          uniquePosterIds.map(async (id) => {
-            const userResponse = await getUserInfo(id);
-            const userData = userResponse.success && userResponse.data ? (userResponse.data as UserData) : undefined;
-            return {
-              id,
-              name: userData?.name || "Unknown User",
-              profilePic: userData?.profilePic || "",
-            };
-          })
-        );
+        const uniquePosterIds = [...new Set(fetchedOpportunities.map((item) => item.postedBy).filter(Boolean))];
+        if (uniquePosterIds.length) {
+          const posterDetails = await Promise.all(
+            uniquePosterIds.map(async (id) => {
+              const userResponse = await getUserInfo(id);
+              const userData = userResponse.success && userResponse.data ? (userResponse.data as UserData) : undefined;
+              return {
+                id,
+                name: userData?.name || "Unknown User",
+                profilePic: userData?.profilePic || "",
+              };
+            })
+          );
 
-        const nextMap: Record<string, { name: string; profilePic?: string }> = {};
-        posterDetails.forEach((poster) => {
-          nextMap[poster.id] = { name: poster.name, profilePic: poster.profilePic };
-        });
-        setUserMap(nextMap);
+          const nextMap: Record<string, { name: string; profilePic?: string }> = {};
+          posterDetails.forEach((poster) => {
+            nextMap[poster.id] = { name: poster.name, profilePic: poster.profilePic };
+          });
+          setUserMap(nextMap);
+        }
+      } else {
+        toast.error(`Failed to fetch opportunities: ${response.message}`);
       }
-    } else {
-      toast.error(`Failed to fetch opportunities: ${response.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -196,13 +203,18 @@ const Opportunities = () => {
         </header>
 
         <main className="mx-auto max-w-7xl px-6 pb-32">
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
-            {opportunities.length > 0 ? (
-              opportunities.map((opportunity) => (
-                <article
-                  key={opportunity.id}
-                  className="luxury-shadow luxury-shadow-hover group flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-10 transition-all duration-500"
-                >
+          {isLoading ? (
+            <div className="flex items-center justify-center h-[40vh]">
+              <FaSpinner className="animate-spin text-xl" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
+              {opportunities.length > 0 ? (
+                opportunities.map((opportunity) => (
+                  <article
+                    key={opportunity.id}
+                    className="luxury-shadow luxury-shadow-hover group flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-10 transition-all duration-500"
+                  >
                   <div className="mb-10 flex items-start justify-between">
                     <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl border border-slate-50 bg-slate-50/50">
                       {opportunity.logoUrl ? (
@@ -318,6 +330,7 @@ const Opportunities = () => {
               </div>
             )}
           </div>
+          )}
 
           
         </main>

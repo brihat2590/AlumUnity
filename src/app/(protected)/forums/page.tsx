@@ -16,8 +16,9 @@ import { createQuestion, getAllQuestions, createOrremoveUpvoteForQuestions, crea
 import { getUserInfo } from '@/firebase/user.controller';
 import { useFirebase } from '@/firebase/firebase.config';
 import Link from 'next/link';
-import { ArrowDown, ArrowUp, Loader2, Plus } from 'lucide-react';
+import { ArrowDown, ArrowUp, Plus } from 'lucide-react';
 import { Inter, Manrope } from 'next/font/google';
+import { FaSpinner } from 'react-icons/fa';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -84,6 +85,7 @@ const Forums = () => {
   });
 
   const [questions, setQuestions] = useState<ForumQuestion[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [voteLoading, setVoteLoading] = useState<Record<string, 'up' | 'down' | null>>({});
 
@@ -115,37 +117,42 @@ const Forums = () => {
   };
 
   const fetchQuestions = async () => {
-    const response = await getAllQuestions();
-    if (response.success) {
-      const fetchedQuestions = (response.questions || []) as ForumQuestion[];
-      const userIds = [...new Set(fetchedQuestions.map((q) => q.posted_by).filter(Boolean))];
+    setIsLoading(true);
+    try {
+      const response = await getAllQuestions();
+      if (response.success) {
+        const fetchedQuestions = (response.questions || []) as ForumQuestion[];
+        const userIds = [...new Set(fetchedQuestions.map((q) => q.posted_by).filter(Boolean))];
 
-      const userFetches = await Promise.all(
-        userIds.map(async (id) => {
-          if (userMap[id]) {
-            return { id, ...userMap[id] };
-          }
+        const userFetches = await Promise.all(
+          userIds.map(async (id) => {
+            if (userMap[id]) {
+              return { id, ...userMap[id] };
+            }
 
-          const user = await getUserInfo(id);
-          const userData = user?.data as UserData | undefined;
-          return {
-            id,
-            name: userData?.name || 'AlumUnity User',
-            profilePic: userData?.profilePic || '',
-            role: userData?.Role || 'AlumUnity User',
-          };
-        })
-      );
+            const user = await getUserInfo(id);
+            const userData = user?.data as UserData | undefined;
+            return {
+              id,
+              name: userData?.name || 'AlumUnity User',
+              profilePic: userData?.profilePic || '',
+              role: userData?.Role || 'AlumUnity User',
+            };
+          })
+        );
 
-      const updatedUserMap = { ...userMap };
-      userFetches.forEach(({ id, name, profilePic, role }) => {
-        updatedUserMap[id] = { name, profilePic, role };
-      });
+        const updatedUserMap = { ...userMap };
+        userFetches.forEach(({ id, name, profilePic, role }) => {
+          updatedUserMap[id] = { name, profilePic, role };
+        });
 
-      setUserMap(updatedUserMap);
-      setQuestions(fetchedQuestions);
-    } else {
-      toast.error(`Failed to fetch questions: ${response.message}`);
+        setUserMap(updatedUserMap);
+        setQuestions(fetchedQuestions);
+      } else {
+        toast.error(`Failed to fetch questions: ${response.message}`);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -233,7 +240,11 @@ const Forums = () => {
         </header>
 
         <section className="space-y-10">
-          {questions.length > 0 ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center h-[40vh]">
+              <FaSpinner className="animate-spin text-xl" />
+            </div>
+          ) : questions.length > 0 ? (
             questions.map((question, index) => {
               const postedBy = userMap[question.posted_by] || {
                 name: 'AlumUnity User',

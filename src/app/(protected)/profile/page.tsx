@@ -5,6 +5,7 @@ import { updateUserInfo, getUserInfo } from '@/firebase/user.controller';
 import { toast } from 'sonner';
 import { useFirebase } from '@/firebase/firebase.config';
 import { Save, School, BriefcaseBusiness, Globe, X, Camera } from 'lucide-react';
+import { FaSpinner } from 'react-icons/fa';
 
 type ProfileFormState = {
   name: string;
@@ -47,35 +48,41 @@ const Profile = () => {
   const [skillInput, setSkillInput] = useState('');
   const [interestInput, setInterestInput] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       if (!userId) return;
 
-      const response = await getUserInfo(userId);
-      if (response.success && response.data) {
-        const userData = response.data;
-        const nextFormData: ProfileFormState = {
-          name: userData.name || '',
-          batch: userData.batch || '',
-          Role: userData.Role || '',
-          profilePic: userData.profilePic || '',
-          Education: userData.Education || '',
-          Bio: userData.Bio || '',
-          linkedIn: userData.linkedIn || '',
-          github: userData.github || '',
-          twitter: userData.twitter || '',
-          portfolio: userData.portfolio || '',
-        };
-        const nextSkills = userData.skills || [];
-        const nextInterests = userData.interests || [];
+      setIsLoading(true);
+      try {
+        const response = await getUserInfo(userId);
+        if (response.success && response.data) {
+          const userData = response.data;
+          const nextFormData: ProfileFormState = {
+            name: userData.name || '',
+            batch: userData.batch || '',
+            Role: userData.Role || '',
+            profilePic: userData.profilePic || '',
+            Education: userData.Education || '',
+            Bio: userData.Bio || '',
+            linkedIn: userData.linkedIn || '',
+            github: userData.github || '',
+            twitter: userData.twitter || '',
+            portfolio: userData.portfolio || '',
+          };
+          const nextSkills = userData.skills || [];
+          const nextInterests = userData.interests || [];
 
-        setFormData(nextFormData);
-        setInitialFormData(nextFormData);
-        setSkills(nextSkills);
-        setInterests(nextInterests);
-        setInitialSkills(nextSkills);
-        setInitialInterests(nextInterests);
+          setFormData(nextFormData);
+          setInitialFormData(nextFormData);
+          setSkills(nextSkills);
+          setInterests(nextInterests);
+          setInitialSkills(nextSkills);
+          setInitialInterests(nextInterests);
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -168,6 +175,11 @@ const Profile = () => {
           </span>
         </header>
 
+        {isLoading ? (
+          <div className="flex items-center justify-center h-[50vh]">
+            <FaSpinner className="animate-spin text-xl" />
+          </div>
+        ) : (
         <form onSubmit={handleSave} className="space-y-14">
           <section className="grid grid-cols-1 gap-10 lg:grid-cols-12">
             <div className="lg:col-span-4">
@@ -455,6 +467,7 @@ const Profile = () => {
             </div>
           </div>
         </form>
+        )}
       </div>
     </main>
   );
