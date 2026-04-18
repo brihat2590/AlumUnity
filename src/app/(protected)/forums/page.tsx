@@ -19,6 +19,7 @@ import Link from 'next/link';
 import { ArrowDown, ArrowUp, Plus } from 'lucide-react';
 import { Inter, Manrope } from 'next/font/google';
 import { FaSpinner } from 'react-icons/fa';
+import { Loader2 } from 'lucide-react';
 
 const manrope = Manrope({
   subsets: ['latin'],
