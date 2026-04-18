@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { ArrowDown, ArrowLeft, ArrowUp } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowUp, Loader, Loader2 } from 'lucide-react';
 import { Inter, Manrope } from 'next/font/google';
 import { useFirebase } from '@/firebase/firebase.config';
 import { getQuestionById, createOrremoveUpvoteForQuestions, createOrremoveDownvoteForQuestions } from '@/firebase/questions.controller';
 import { getUserInfo } from '@/firebase/user.controller';
 import { Button } from '@/components/ui/button';
+import { FaSpinner } from 'react-icons/fa';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -109,10 +110,11 @@ export default function ForumDetailPage() {
           role: userData?.Role || 'AlumUnity User',
         });
       } else {
+        const postedByData = typeof fetchedQuestion.posted_by === 'object' && fetchedQuestion.posted_by !== null ? fetchedQuestion.posted_by as any : {};
         setPoster({
-          name: typeof fetchedQuestion.posted_by === 'object' && fetchedQuestion.posted_by !== null ? (fetchedQuestion.posted_by as any).name || 'AlumUnity User' : 'AlumUnity User',
-          profilePic: '',
-          role: 'AlumUnity User',
+          name: postedByData.name || 'AlumUnity User',
+          profilePic: postedByData.profilePic || '',
+          role: postedByData.Role || 'AlumUnity User',
         });
       }
     } else {
@@ -154,9 +156,9 @@ export default function ForumDetailPage() {
 
   if (loading) {
     return (
-      <div className={`${manrope.variable} ${inter.variable} min-h-screen bg-white px-6 py-28 text-center text-slate-600`}>
-        Loading discussion...
-      </div>
+     <div className="flex items-center justify-center h-screen">
+                   <FaSpinner className="animate-spin text-xl" />
+           </div>
     );
   }
 
