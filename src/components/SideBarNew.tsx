@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useFirebase } from '@/firebase/firebase.config';
+import { getUserInfo } from '@/firebase/user.controller';
 import { toast } from 'sonner';
 import {
   LayoutDashboard,
@@ -43,6 +44,7 @@ type SidebarNewProps = {
 export function SidebarNew({ onCollapseChange }: SidebarNewProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [profilePic, setProfilePic] = useState<string | null>(null);
   const pathname = usePathname();
   const { logOut, loggedInUser } = useFirebase();
 
@@ -53,6 +55,27 @@ export function SidebarNew({ onCollapseChange }: SidebarNewProps) {
   useEffect(() => {
     onCollapseChange?.(isCollapsed);
   }, [isCollapsed, onCollapseChange]);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (loggedInUser?.uid) {
+      getUserInfo(loggedInUser.uid).then((res) => {
+        if (isMounted) {
+          if (res?.success && res.data) {
+            setProfilePic((res.data as any).profilePic || loggedInUser.photoURL || null);
+          } else {
+            setProfilePic(loggedInUser.photoURL || null);
+          }
+        }
+      });
+    } else {
+      setProfilePic(null);
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [loggedInUser]);
+
   // console.log(loggedInUser)
   //loggedInUser.displayName loggedInUser.email
   //loggedInUser.photoURL
@@ -187,9 +210,9 @@ export function SidebarNew({ onCollapseChange }: SidebarNewProps) {
             )}
           >
             <div className="relative shrink-0">
-              {loggedInUser?.photoURL ? (
+              {profilePic ? (
                 <img
-                  src={loggedInUser.photoURL}
+                  src={profilePic}
                   alt="User avatar"
                   className="h-9 w-9 rounded-full object-cover ring-2 ring-white shadow-sm transition-transform duration-300 hover:scale-105"
                 />

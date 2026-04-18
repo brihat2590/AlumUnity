@@ -6,6 +6,8 @@ import { toast } from 'sonner';
 import { Loader2, ArrowRight, Plus, X, Upload, ScrollText, MessageCircleMore, GraduationCap, Sparkles } from 'lucide-react';
 import { useFirebase } from '@/firebase/firebase.config';
 import { createResumePost, getAllResumePosts } from '@/firebase/resume.controller';
+import { getUserInfo } from '@/firebase/user.controller';
+import { FaSpinner } from 'react-icons/fa';
 
 const toSlug = (title: string) =>
     title
@@ -39,6 +41,7 @@ export default function ResumeReview() {
     const [isLoadingResumes, setIsLoadingResumes] = useState(true);
     const [showUploadForm, setShowUploadForm] = useState(false);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [userMap, setUserMap] = useState<Record<string, { name: string, profilePic: string, role: string }>>({});
     const [uploadedResumeData, setUploadedResumeData] = useState<{
         url: string;
         publicId: string;
@@ -53,7 +56,29 @@ export default function ResumeReview() {
         setIsLoadingResumes(true);
         const response = await getAllResumePosts();
         if (response.success) {
-            setResumes(response.data || []);
+            const fetchedResumes = response.data || [];
+            
+            const userIds = [...new Set(fetchedResumes.map((r: ResumePost) => r.postedBy).filter(Boolean))];
+            const userFetches = await Promise.all(
+                userIds.map(async (id) => {
+                    const user = await getUserInfo(id);
+                    const userData = user?.data as any;
+                    return {
+                        id,
+                        name: userData?.name || 'AlumUnity User',
+                        profilePic: userData?.profilePic || '',
+                        role: userData?.Role || 'AlumUnity User',
+                    };
+                })
+            );
+
+            const updatedUserMap: Record<string, { name: string, profilePic: string, role: string }> = {};
+            userFetches.forEach(({ id, name, profilePic, role }) => {
+                updatedUserMap[id] = { name, profilePic, role };
+            });
+
+            setUserMap(updatedUserMap);
+            setResumes(fetchedResumes);
         } else {
             toast.error(response.message || 'Failed to load resumes');
         }
@@ -214,7 +239,7 @@ export default function ResumeReview() {
                     {/* Toolbar */}
                     <div className="flex flex-col sm:flex-row items-start justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60 sm:items-center md:px-6">
                         <div className="flex items-center gap-4">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 ring-1 ring-inset ring-indigo-100">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-xl  text-indigo-600 ">
                                 <ScrollText className="h-6 w-6" />
                             </div>
                             <div>
@@ -240,7 +265,7 @@ export default function ResumeReview() {
                         <div className="flex min-h-[300px] items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-slate-50/50">
                             <div className="flex flex-col items-center gap-3 text-slate-500">
                                 <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
-                                <p className="font-medium">Loading community resumes...</p>
+                                <p className="font-medium"><FaSpinner className="animate-spin" /> Loading community resumes...</p>
                             </div>
                         </div>
                     ) : resumes.length === 0 ? (
@@ -261,7 +286,10 @@ export default function ResumeReview() {
                         </div>
                     ) : (
                         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            {resumes.map((resume) => (
+                            {resumes.map((resume) => {
+                                const poster = userMap[resume.postedBy];
+                                
+                                return (
                                 <Link
                                     href={`/resumereview/${resume.slug}`}
                                     key={resume.id}
@@ -269,10 +297,8 @@ export default function ResumeReview() {
                                 >
                                     <div>
                                         <div className="mb-6 flex items-start justify-between">
-                                            <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-white ring-1 ring-inset ring-slate-100 shadow-sm transition-colors group-hover:ring-indigo-100">
-                                                <ScrollText className="h-8 w-8 text-indigo-500 transition-colors group-hover:text-indigo-600" strokeWidth={1.5} />
-                                            </div>
-                                            <div className="flex items-center gap-1.5 rounded-full bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600 ring-1 ring-inset ring-slate-200/80 transition-colors group-hover:bg-indigo-50 group-hover:text-indigo-700 group-hover:ring-indigo-100">
+                                            
+                                            <div className="flex items-center gap-1.5 rounded-full  px-3 py-1.5 text-xs font-semibold text-slate-600  transition-colors group-hover:bg-indigo-50 group-hover:text-indigo-700 group-hover:ring-indigo-100">
                                                 <MessageCircleMore className="h-3.5 w-3.5" />
                                                 {resume.commentsCount || 0}
                                             </div>
@@ -283,13 +309,17 @@ export default function ResumeReview() {
                                         </h3>
                                         
                                         <div className="my-6 flex items-center gap-3">
-                                            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-600 shadow-sm ring-1 ring-white">
-                                                {resume.postedByName?.charAt(0).toUpperCase() || 'U'}
+                                            <div className="flex h-10 w-10 overflow-hidden flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-600 shadow-sm ring-1 ring-white">
+                                                {poster?.profilePic ? (
+                                                    <img src={poster.profilePic} alt={resume.postedByName} className="h-full w-full object-cover" />
+                                                ) : (
+                                                    resume.postedByName?.charAt(0).toUpperCase() || 'U'
+                                                )}
                                             </div>
                                             <div className="flex flex-col min-w-0">
-                                                <span className="text-[10px] uppercase tracking-tighter text-slate-400">Curated by</span>
+                                                <span className="text-[10px] uppercase tracking-tighter text-slate-400">{poster?.role || 'Curated by'}</span>
                                                 <span className="truncate text-sm font-bold text-[#0f172a]">
-                                                    {resume.postedByName}
+                                                    {poster?.name || resume.postedByName}
                                                 </span>
                                             </div>
                                         </div>
@@ -304,7 +334,8 @@ export default function ResumeReview() {
                                         </span>
                                     </div>
                                 </Link>
-                            ))}
+                                );
+                            })}
                         </div>
                     )}
                 </div>
