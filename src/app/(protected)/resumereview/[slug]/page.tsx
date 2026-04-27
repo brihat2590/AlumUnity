@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ArrowLeft, ExternalLink, FileText, Loader2, MessageCircle, SendHorizonal } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Highlighter, Info, Loader2, MessageCircleMore, Paperclip, Plus, Send, Settings2, Share2, ZoomIn, ZoomOut } from 'lucide-react';
 import { toast } from 'sonner';
 import { useFirebase } from '@/firebase/firebase.config';
 import { addCommentToResume, getResumeBySlug } from '@/firebase/resume.controller';
@@ -21,6 +21,14 @@ const formatDate = (input: any) => {
   });
 };
 
+const getInitials = (name: string) =>
+  name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('') || 'U';
+
 export default function ResumeReviewDetailPage() {
   const params = useParams<{ slug: string }>();
   const slug = params?.slug;
@@ -31,6 +39,7 @@ export default function ResumeReviewDetailPage() {
   const [comment, setComment] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const loadResume = async () => {
     if (!slug) {
       setIsLoading(false);
@@ -45,7 +54,8 @@ export default function ResumeReviewDetailPage() {
       setIsLoading(false);
       return;
     }
-    if(!response.data || !response.data.resume||!response.data.resume.resumeUrl){
+
+    if (!response.data?.resume?.resumeUrl) {
       toast.error('Resume not found');
       setIsLoading(false);
       return;
@@ -60,23 +70,18 @@ export default function ResumeReviewDetailPage() {
     loadResume();
   }, [slug]);
 
-  const previewConfig = useMemo(() => {
-    if (!resume) {
-      return {
-        isPdf: false,
-        previewSrc: '',
-      };
-    }
+  const previewComments = useMemo(() => comments.slice(0, 2), [comments]);
+  const reviewerName = resume?.postedByName || 'AlumUnity User';
+  const title = resume?.title || 'Resume Review';
+  const commentCount = comments.length;
+  const previewSrc = useMemo(() => {
+    if (!resume?.resumeUrl) return '';
 
-    const fileHint = `${resume.fileName || ''} ${resume.resumeUrl || ''}`.toLowerCase();
-    const isPdf = fileHint.includes('.pdf') || fileHint.includes('/pdf/');
-    const previewSrc = isPdf ? `${resume.resumeUrl}#view=FitH` : resume.resumeUrl;
-
-    return {
-      isPdf,
-      previewSrc,
-    };
-  }, [resume]);
+    const isPdf = resume.resumeUrl.toLowerCase().includes('.pdf');
+    return isPdf
+      ? `${resume.resumeUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH&zoom=160`
+      : resume.resumeUrl;
+  }, [resume?.resumeUrl]);
 
   const handleCommentSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -115,21 +120,33 @@ export default function ResumeReviewDetailPage() {
     setIsSubmitting(false);
   };
 
+  const handleShare = async () => {
+    if (typeof window === 'undefined') return;
+
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success('Resume link copied');
+    } catch {
+      toast.error('Could not copy link');
+    }
+  };
+
   if (isLoading) {
     return (
-      <div className="flex min-h-[70vh] items-center justify-center bg-slate-50 px-4 text-slate-700">
-        <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Loading resume thread...
+      <div className="flex min-h-screen items-center justify-center bg-[#fcfcfd] px-4 text-slate-700">
+        <Loader2 className="mr-2 h-5 w-5 animate-spin text-violet-600" />
+        Loading resume thread...
       </div>
     );
   }
 
   if (!resume) {
     return (
-      <div className="flex min-h-[70vh] flex-col items-center justify-center gap-4 bg-slate-50 px-4 text-slate-700">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#fcfcfd] px-4 text-slate-700">
         <p>Resume thread not found.</p>
         <Link
           href="/resumereview"
-          className="rounded-full bg-white/85 px-4 py-2 text-sm text-indigo-700 shadow-[0_12px_24px_-20px_rgba(79,70,229,0.9)] ring-1 ring-indigo-100/80 transition hover:-translate-y-0.5"
+          className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-600 transition-all hover:bg-slate-50"
         >
           Back to Resume Review
         </Link>
@@ -137,124 +154,245 @@ export default function ResumeReviewDetailPage() {
     );
   }
 
+  const headerAvatars = previewComments.slice(0, 2).map((item) => ({
+    id: item.id || `${item.postedByName || 'Reviewer'}-${item.createdAt?.seconds || item.createdAt || ''}`,
+    name: item.postedByName || 'Reviewer',
+    photoURL: item.postedByPhotoURL || '',
+  }));
+
   return (
-    <section className="relative min-h-screen overflow-hidden bg-white px-4 py-10 md:px-8 md:py-12">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_8%,rgba(129,140,248,0.1),transparent_34%),radial-gradient(circle_at_86%_14%,rgba(99,102,241,0.08),transparent_40%)]" />
-      <div className="relative mx-auto max-w-7xl space-y-7">
-        <Link
-          href="/resumereview"
-          className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-medium text-indigo-600 backdrop-blur-sm transition hover:-translate-y-0.5 hover:text-indigo-700"
-        >
-          <ArrowLeft className="h-4 w-4" /> Back to all resumes
-        </Link>
+    <main className="flex h-screen flex-col overflow-hidden bg-[#fcfcfd] text-slate-900 antialiased">
+      <header className="flex h-20 items-center justify-between border-b border-slate-100 bg-white px-8">
+        <div className="flex min-w-0 items-center gap-6">
+          <Link href="/resumereview" className="group flex items-center gap-3 text-slate-400 transition-colors hover:text-violet-600">
+            <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
+            <span className="text-sm font-semibold uppercase tracking-tight">Overview</span>
+          </Link>
+          <div className="h-6 w-px bg-slate-100" />
+          <div className="min-w-0">
+            <h1 className="truncate text-lg font-bold tracking-tight text-slate-900">
+              {reviewerName} — Senior UX Resume
+            </h1>
+            <p className="truncate text-xs font-medium text-slate-400">Reviewing for {title}</p>
+          </div>
+        </div>
 
-        <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-          <article className="rounded-[34px] bg-gradient-to-br from-white via-white to-indigo-50/25 p-5 shadow-[0_45px_90px_-58px_rgba(79,70,229,0.65)] backdrop-blur md:p-7">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <h1 className="text-2xl font-semibold text-slate-900 md:text-3xl">{resume.title}</h1>
-                <p className="mt-2 text-sm text-slate-600">
-                  Uploaded by {resume.postedByName} • {formatDate(resume.createdAt)}
-                </p>
-              </div>
-
-              <div className="inline-flex items-center text-xs font-semibold text-indigo-700">
-                <FileText className="mr-1 h-3.5 w-3.5" /> {resume.fileName || 'resume'}
-              </div>
-            </div>
-
-            <p className="mt-4 text-xs font-medium uppercase tracking-[0.16em] text-indigo-500">Inline preview</p>
-
-            {!previewConfig.isPdf && (
-              <p className="mt-3 rounded-2xl bg-amber-50/60 px-3 py-2 text-xs text-amber-700">
-                This file type may not render in all browsers. Use open in new tab for the best experience.
-              </p>
-            )}
-
-            <div className="mt-4 overflow-hidden rounded-3xl bg-white shadow-[0_32px_70px_-56px_rgba(79,70,229,0.6)]">
-              <iframe
-                src={previewConfig.previewSrc}
-                title={resume.title}
-                className="h-[72vh] w-full"
+        <div className="flex items-center gap-3">
+          <div className="mr-4 flex -space-x-2">
+            {headerAvatars.map((avatar) => (
+              <img
+                key={avatar.id}
+                alt={avatar.name}
+                className="h-8 w-8 rounded-full border-2 border-white object-cover ring-1 ring-slate-100"
+                src={avatar.photoURL || `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(avatar.name)}`}
               />
+            ))}
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-slate-50 text-[10px] font-bold text-slate-400 ring-1 ring-slate-100">
+              +{Math.max(commentCount - headerAvatars.length, 1)}
             </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleShare}
+            className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-600 transition-all hover:bg-slate-50"
+          >
+            <span className="inline-flex items-center gap-2"><Share2 className="h-4 w-4" /> Share</span>
+          </button>
+          <button
+            type="button"
+            className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet-600/30 active:translate-y-0"
+          >
+            Finish Review
+          </button>
+        </div>
+      </header>
 
-            <div className="mt-4 flex flex-wrap gap-2">
-              <a
-                href={resume.resumeUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center rounded-full px-4 py-2 text-sm font-medium text-indigo-700 transition hover:-translate-y-0.5 hover:text-indigo-800"
-              >
-                <ExternalLink className="mr-1.5 h-4 w-4" /> Open resume in new tab
-              </a>
-            </div>
-          </article>
-
-          <aside className="rounded-[34px] bg-gradient-to-br from-white via-white to-indigo-50/20 p-5 shadow-[0_36px_75px_-55px_rgba(79,70,229,0.65)] backdrop-blur md:p-6">
-            <h2 className="mb-4 inline-flex items-center gap-2 text-lg font-semibold text-slate-900">
-              <MessageCircle className="h-5 w-5 text-indigo-600" /> Comments ({comments.length})
-            </h2>
-
-            <form onSubmit={handleCommentSubmit} className="mb-5 space-y-3">
-              <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                rows={4}
-                placeholder="Share constructive feedback..."
-                className="w-full rounded-3xl bg-white px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none shadow-[0_14px_30px_-26px_rgba(79,70,229,0.6)] transition focus:shadow-[0_16px_34px_-24px_rgba(79,70,229,0.7)]"
-              />
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_18px_34px_-22px_rgba(79,70,229,0.78)] transition hover:-translate-y-0.5 hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Posting...
-                  </>
-                ) : (
-                  <>
-                    <SendHorizonal className="h-4 w-4" /> Post comment
-                  </>
-                )}
+      <div className="flex flex-1 overflow-hidden">
+        <div className="relative flex flex-1 flex-col overflow-hidden bg-slate-50">
+          <div className="glass-panel absolute left-1/2 top-6 z-10 flex -translate-x-1/2 items-center gap-6 rounded-2xl border border-white px-4 py-2 shadow-xl shadow-slate-200/50">
+            <div className="flex items-center gap-1">
+              <button type="button" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100/50" aria-label="Zoom out">
+                <ZoomOut className="h-[18px] w-[18px]" />
               </button>
-            </form>
+              <span className="w-12 text-center text-[13px] font-bold text-slate-700">100%</span>
+              <button type="button" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100/50" aria-label="Zoom in">
+                <ZoomIn className="h-[18px] w-[18px]" />
+              </button>
+            </div>
+            <div className="h-4 w-px bg-slate-200" />
+            <div className="flex items-center gap-2">
+              <button type="button" className="rounded-xl bg-violet-600/10 p-2 text-violet-600" title="Add Comment" aria-label="Add comment">
+                <MessageCircleMore className="h-5 w-5" />
+              </button>
+              <button type="button" className="rounded-xl p-2 text-slate-400 transition-colors hover:text-slate-600" title="Highlight" aria-label="Highlight">
+                <Highlighter className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="h-4 w-px bg-slate-200" />
+            <div className="flex items-center gap-1">
+              <button type="button" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100/50" aria-label="Previous page">
+                <ChevronLeft className="h-[18px] w-[18px]" />
+              </button>
+              <span className="mx-1 text-[13px] font-bold text-slate-700">1 / 2</span>
+              <button type="button" className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100/50" aria-label="Next page">
+                <ChevronRight className="h-[18px] w-[18px]" />
+              </button>
+            </div>
+          </div>
 
-            <div className="max-h-[52vh] space-y-3 overflow-y-auto pr-1">
+          <div className="custom-scrollbar flex flex-1 flex-col items-center overflow-y-auto px-12 pb-20 pt-28">
+            <div className="resume-paper relative w-full max-w-[840px] rounded-sm bg-white p-16">
+              <div className="mb-16 flex items-start justify-between">
+                <div>
+                  <h2 className="mb-2 text-4xl font-black tracking-tight text-slate-900">{reviewerName}</h2>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-600">{title}</p>
+                </div>
+                <div className="text-right text-[13px] font-medium leading-relaxed text-slate-400">
+                  <p>{resume.postedByEmail || 'No email'}</p>
+                  <p>{formatDate(resume.createdAt)}</p>
+                  <p>{resume.fileName || 'Resume file'}</p>
+                </div>
+              </div>
+
+              <div className="space-y-12">
+                <section>
+                  <h3 className="mb-6 border-b border-slate-100 pb-3 text-sm font-bold uppercase tracking-widest text-slate-900">Professional Summary</h3>
+                  <div className="rounded-sm bg-slate-50">
+                    <iframe src={previewSrc} title={title} className="h-[82vh] w-full bg-white" />
+                  </div>
+                </section>
+
+                <section className="relative">
+                  <h3 className="mb-6 border-b border-slate-100 pb-3 text-sm font-bold uppercase tracking-widest text-slate-900">Experience</h3>
+                  <div className="space-y-10">
+                    <div className="relative">
+                      <div className="absolute -right-[68px] top-1 cursor-pointer group">
+                        {/* <div className="h-3 w-3 rounded-full bg-violet-600 ring-8 ring-violet-600/10 transition-all group-hover:scale-125" /> */}
+                        <div className="pointer-events-none absolute left-full top-1/2 ml-3 -translate-y-1/2 whitespace-nowrap rounded bg-slate-900 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white opacity-0 transition-opacity group-hover:opacity-100">
+                          Comment L12
+                        </div>
+                      </div>
+                      <div className="mb-2 flex items-baseline justify-between">
+                        <h4 className="text-[17px] font-bold text-slate-900">Resume Snapshot</h4>
+                        <span className="text-xs font-bold text-slate-300">LIVE</span>
+                      </div>
+                      <ul className="space-y-3">
+                        <li className="flex gap-3 text-[15px] leading-relaxed text-slate-600">
+                          <span className="mt-0.5 font-black text-violet-600">•</span>
+                          <span>Review the document above and use the sidebar for precise feedback.</span>
+                        </li>
+                        <li className="flex gap-3 text-[15px] leading-relaxed text-slate-600">
+                          <span className="mt-0.5 font-black text-violet-600">•</span>
+                          <span>Focus comments on impact, clarity, and whether the experience reads as strong and specific.</span>
+                        </li>
+                        <li className="flex gap-3 text-[15px] leading-relaxed text-slate-600">
+                          <span className="mt-0.5 font-black text-violet-600">•</span>
+                          <span>Use the review panel to post actionable feedback and resolve suggestions.</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside className="flex w-full flex-col border-l border-slate-100 bg-white md:w-[400px]">
+          <div className="flex items-center justify-between border-b border-slate-50 p-6">
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-slate-900">Feedback</h3>
+              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">{commentCount}</span>
+            </div>
+            {/* <div className="flex gap-1">
+              <button type="button" className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-50" aria-label="Filter feedback">
+                <Settings2 className="h-5 w-5" />
+              </button>
+              <button type="button" className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-50" aria-label="More actions">
+                <Plus className="h-5 w-5 rotate-45" />
+              </button>
+            </div> */}
+          </div>
+
+          <div className="custom-scrollbar flex-1 overflow-y-auto p-6">
+            <div className="mb-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-5">
+              <div className="mb-3 flex items-center gap-3">
+                <Info className="h-5 w-5 text-violet-600" />
+                <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Context</span>
+              </div>
+              <p className="text-[13px] italic leading-relaxed text-slate-500">
+                {title} is ready for review. Please focus on impact driven keywords and clarity.
+              </p>
+            </div>
+
+            <div className="space-y-8">
               {comments.length === 0 ? (
-                <div className="rounded-3xl bg-slate-50/70 p-4 text-sm text-slate-600">
+                <div className="rounded-2xl border border-slate-100 bg-white p-4 text-sm text-slate-500 shadow-sm">
                   No comments yet. Be the first to leave feedback.
                 </div>
               ) : (
-                comments.map((item) => (
-                  <div key={item.id} className="rounded-3xl bg-white p-3.5 shadow-[0_18px_36px_-30px_rgba(79,70,229,0.45)]">
-                    <div className="flex items-start gap-3">
-                      {((item.postedBy === loggedInUser?.uid && loggedInUser?.photoURL) || item.postedByPhotoURL) ? (
-                        <img
-                          src={(item.postedBy === loggedInUser?.uid && loggedInUser?.photoURL) || item.postedByPhotoURL}
-                          alt={item.postedByName || 'User avatar'}
-                          className="mt-0.5 h-8 w-8 shrink-0 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-xs font-semibold text-indigo-700 ring-1 ring-indigo-100">
-                          {(item.postedByName || 'A').charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                      <div className="min-w-0">
-                        <p className="text-sm text-slate-800">{item.comment}</p>
-                        <p className="mt-2 text-xs text-slate-500">
-                          {item.postedByName} • {formatDate(item.createdAt)}
-                        </p>
+                previewComments.map((item) => (
+                  <div key={item.id} className="space-y-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex min-w-0 items-center gap-2">
+                        {item.postedByPhotoURL ? (
+                          <img
+                            alt={item.postedByName || 'Reviewer'}
+                            className="h-6 w-6 rounded-full object-cover ring-1 ring-slate-100"
+                            src={item.postedByPhotoURL}
+                          />
+                        ) : (
+                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-50 text-[10px] font-bold text-slate-400 ring-1 ring-slate-100">
+                            {getInitials(item.postedByName || 'Reviewer')}
+                          </div>
+                        )}
+                        <span className="truncate text-xs font-bold text-slate-900">{item.postedByName || 'Reviewer'}</span>
+                        <span className="text-[10px] font-medium uppercase tracking-tighter text-slate-300">• {formatDate(item.createdAt)}</span>
                       </div>
+                      <span className="rounded border border-violet-600/10 bg-violet-600/5 px-2 py-0.5 text-[10px] font-black text-violet-600">L12</span>
+                    </div>
+
+                    <div className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                      <div className="absolute bottom-0 left-0 top-0 w-1 scale-y-0 transform bg-violet-600 transition-transform group-hover:scale-y-100" />
+                      <p className="text-[14px] leading-relaxed text-slate-600">{item.comment}</p>
+                    </div>
+
+                    <div className="flex gap-4 px-1">
+                      <button type="button" className="text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-violet-600">Reply</button>
+                      <button type="button" className="text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-emerald-500">Resolve</button>
                     </div>
                   </div>
                 ))
               )}
             </div>
-          </aside>
-        </div>
+          </div>
+
+          <div className="border-t border-slate-50 bg-white p-6">
+            <form onSubmit={handleCommentSubmit} className="relative">
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                rows={4}
+                placeholder="Add a general comment..."
+                className="custom-scrollbar min-h-[100px] w-full resize-none rounded-2xl bg-slate-50/50 p-4 pr-12 text-sm text-slate-700 outline-none transition-all placeholder:text-slate-400 focus:border-violet-600/40 focus:bg-white focus:ring-2 focus:ring-violet-600/20"
+              />
+              <div className="absolute bottom-3 right-3 flex items-center gap-1">
+                {/* <button type="button" className="p-2 text-slate-400 hover:text-violet-600" aria-label="Attach file">
+                  <Paperclip className="h-5 w-5" />
+                </button> */}
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="rounded-xl bg-slate-900 p-2.5 text-white transition-all hover:bg-black disabled:opacity-60"
+                  aria-label="Send comment"
+                >
+                  {isSubmitting ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <Send className="h-[18px] w-[18px]" />}
+                </button>
+              </div>
+            </form>
+          </div>
+        </aside>
       </div>
-    </section>
+    </main>
   );
 }
