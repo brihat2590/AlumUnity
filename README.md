@@ -20,9 +20,23 @@ AlumUnity is a modern alumni community platform where students and graduates can
 
 ## Screenshots
 
-![Profile and upcoming events](public/screenshots/profile-events.png)
-![Forums page](public/screenshots/forums.png)
-![Resume review page](public/screenshots/resume-review.png)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b117026e-9bb9-4753-8cd2-c66460c5be29" width="90%" style="margin-bottom: 20px;" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/786ad49c-a77c-4913-92da-cc41adde518f" width="90%" style="margin-bottom: 20px;" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/cf5eb4b2-b145-464d-a693-0eaf2ec9616a" width="90%" />
+</p>
+
+
+
+
+
+
 
 ## Getting Started
 
