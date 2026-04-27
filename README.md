@@ -1,6 +1,14 @@
 # AlumUnity
 
-AlumUnity is a community platform for alumni to connect, share opportunities, join forums, discover events, and communicate.
+AlumUnity is a modern alumni community platform where students and graduates can connect, discuss in forums, discover events, share opportunities, and request resume feedback.
+
+## Highlights
+
+- Alumni networking with structured profiles
+- Community forums with threaded discussions and voting
+- Event discovery with online or in-person details
+- Resume review workflows with comments and feedback
+- Secure authentication with protected application routes
 
 ## Tech Stack
 
@@ -8,23 +16,25 @@ AlumUnity is a community platform for alumni to connect, share opportunities, jo
 - TypeScript
 - Tailwind CSS
 - Firebase (Authentication + Firestore)
+- Stream Video SDK (video chat)
 
-## Features
+## Screenshots
 
-- Email/password authentication
-- Google and GitHub sign-in
-- Protected dashboard routes
-- Events, forums, opportunities, profile, and video chat sections
+![Profile and upcoming events](public/screenshots/profile-events.png)
+![Forums page](public/screenshots/forums.png)
+![Resume review page](public/screenshots/resume-review.png)
 
-## Project Setup
+## Getting Started
 
-1. Install dependencies:
+### 1. Install dependencies
 
 ```bash
 npm install
 ```
 
-2. Create a `.env` file in the project root and add:
+### 2. Configure environment variables
+
+Create a `.env.local` file in the project root:
 
 ```dotenv
 NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
@@ -36,22 +46,32 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
-3. Run the development server:
+### 3. Run the development server
 
 ```bash
 npm run dev
 ```
 
-4. Open http://localhost:3000
+Open http://localhost:3000 in your browser.
 
-## Available Scripts
+## Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Run production build
-- `npm run lint` - Run ESLint
+- `npm run dev`: Start the local development server
+- `npm run build`: Build the production bundle
+- `npm run start`: Run the production build
+- `npm run lint`: Run ESLint
+- `npm run seed:firebase`: Seed Firestore data
 
-## Notes
+## Project Structure
 
-- Enable Google and GitHub providers in Firebase Authentication if you use social login.
-- Keep Firebase keys in `.env` and never commit real secrets.
+- `src/app`: App Router pages and layouts
+- `src/components`: Reusable UI and feature components
+- `src/firebase`: Firebase configuration and controllers
+- `src/types`: Shared TypeScript type definitions
+- `scripts/seed-firestore.mjs`: Firestore seed script
+
+## Security Notes
+
+- Never commit real credentials to version control.
+- Enable and configure required OAuth providers in Firebase Authentication.
+- Use environment-specific Firebase projects for development and production.
