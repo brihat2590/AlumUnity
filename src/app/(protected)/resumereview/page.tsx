@@ -207,9 +207,9 @@ export default function ResumeReview() {
     };
 
     return (
-        <section className="relative min-h-screen bg-slate-50 pb-20 selection:bg-indigo-100 selection:text-indigo-900">
+        <section className="relative min-h-screen bg-white pb-20 selection:bg-indigo-100 selection:text-indigo-900">
             {/* Background elements */}
-            <div className="absolute inset-x-0 top-0 h-[500px] bg-gradient-to-b from-indigo-50/50 via-indigo-50/20 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_15%_0%,rgba(129,140,248,0.1),transparent_45%),radial-gradient(circle_at_85%_5%,rgba(99,102,241,0.07),transparent_48%)] pointer-events-none" />
             
             <div className="relative mx-auto max-w-7xl px-4 py-12 md:px-8 lg:py-16 space-y-12">
                 
@@ -237,11 +237,9 @@ export default function ResumeReview() {
 
                 <div className="space-y-8">
                     {/* Toolbar */}
-                    <div className="flex flex-col sm:flex-row items-start justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60 sm:items-center md:px-6">
+                    <div className="flex flex-col sm:flex-row items-start justify-between gap-4 rounded-3xl bg-white p-4 shadow-[0_30px_70px_-60px_rgba(79,70,229,0.55)] backdrop-blur sm:items-center md:px-6">
                         <div className="flex items-center gap-4">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl  text-indigo-600 ">
-                                <ScrollText className="h-6 w-6" />
-                            </div>
+                            
                             <div>
                                 <h2 className="text-lg font-bold text-slate-900">Community Resumes</h2>
                                 <p className="text-sm font-medium text-slate-500">
@@ -253,7 +251,7 @@ export default function ResumeReview() {
                         <button
                             type="button"
                             onClick={() => setShowUploadForm(true)}
-                            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm ring-1 ring-indigo-600 transition-all hover:bg-indigo-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_18px_35px_-23px_rgba(79,70,229,0.82)] ring-1 ring-indigo-600 transition-all hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-[0_20px_38px_-22px_rgba(79,70,229,0.9)] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
                         >
                             <Plus className="h-4 w-4" strokeWidth={2.5} /> 
                             Submit Resume
@@ -262,16 +260,16 @@ export default function ResumeReview() {
 
                     {/* Resumes Grid */}
                     {isLoadingResumes ? (
-                        <div className="flex min-h-[300px] items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-slate-50/50">
+                        <div className="flex min-h-[300px] items-center justify-center rounded-[32px] bg-white shadow-[0_24px_55px_-48px_rgba(79,70,229,0.4)]">
                             <div className="flex flex-col items-center gap-3 text-slate-500">
                                 <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
                                 <p className="font-medium"><FaSpinner className="animate-spin" /> Loading community resumes...</p>
                             </div>
                         </div>
                     ) : resumes.length === 0 ? (
-                        <div className="flex min-h-[300px] items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-slate-50/50 px-4 text-center">
+                        <div className="flex min-h-[300px] items-center justify-center rounded-[32px] bg-white px-4 text-center shadow-[0_24px_55px_-48px_rgba(79,70,229,0.4)]">
                             <div className="flex flex-col items-center gap-3">
-                                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 ring-4 ring-white">
+                                <div className="flex h-16 w-16 items-center justify-center text-slate-400">
                                     <Sparkles className="h-8 w-8 text-slate-400" />
                                 </div>
                                 <h3 className="text-lg font-semibold text-slate-900 mt-2">No resumes yet</h3>
@@ -285,7 +283,7 @@ export default function ResumeReview() {
                             </div>
                         </div>
                     ) : (
-                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
                             {resumes.map((resume) => {
                                 const poster = userMap[resume.postedBy];
                                 
@@ -293,12 +291,12 @@ export default function ResumeReview() {
                                 <Link
                                     href={`/resumereview/${resume.slug}`}
                                     key={resume.id}
-                                    className="luxury-shadow luxury-shadow-hover group flex flex-col justify-between overflow-hidden rounded-2xl bg-white p-8 border border-slate-100 transition-all duration-500 hover:-translate-y-1"
+                                    className="luxury-shadow luxury-shadow-hover group flex flex-col justify-between overflow-hidden rounded-[30px] border border-transparent bg-gradient-to-br from-white via-white to-indigo-50/25 p-8 shadow-[0_30px_70px_-58px_rgba(79,70,229,0.55)] [background:linear-gradient(white,white)_padding-box,linear-gradient(135deg,rgba(99,102,241,0.42),rgba(99,102,241,0.18),rgba(15,23,42,0.12))_border-box] transition-all duration-500 hover:-translate-y-1 hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(135deg,rgba(99,102,241,0.6),rgba(99,102,241,0.24),rgba(15,23,42,0.16))_border-box]"
                                 >
                                     <div>
                                         <div className="mb-6 flex items-start justify-between">
                                             
-                                            <div className="flex items-center gap-1.5 rounded-full  px-3 py-1.5 text-xs font-semibold text-slate-600  transition-colors group-hover:bg-indigo-50 group-hover:text-indigo-700 group-hover:ring-indigo-100">
+                                            <div className="flex items-center gap-1.5 px-1 py-1.5 text-xs font-semibold text-slate-600 transition-colors group-hover:text-indigo-700">
                                                 <MessageCircleMore className="h-3.5 w-3.5" />
                                                 {resume.commentsCount || 0}
                                             </div>
@@ -325,7 +323,7 @@ export default function ResumeReview() {
                                         </div>
                                     </div>
 
-                                    <div className="mt-auto flex items-center justify-between border-t border-slate-50 pt-6">
+                                    <div className="mt-auto flex items-center justify-between pt-6">
                                         <span className="text-xs font-medium text-slate-500 flex items-center gap-1.5">
                                            {formatDate(resume.createdAt)}
                                         </span>
@@ -343,8 +341,8 @@ export default function ResumeReview() {
 
             {/* Modal Upload Form Overlay */}
             {showUploadForm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-slate-900/40 p-4 backdrop-blur-sm sm:p-6 opacity-100 transition-opacity">
-                    <div className="relative w-full max-w-2xl transform rounded-3xl bg-white p-6 text-left align-middle shadow-2xl ring-1 ring-slate-200/50 transition-all sm:p-8">
+                <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-slate-900/30 p-4 backdrop-blur-sm sm:p-6 opacity-100 transition-opacity">
+                    <div className="relative w-full max-w-2xl transform rounded-[32px] bg-gradient-to-br from-white via-white to-indigo-50/20 p-6 text-left align-middle shadow-[0_48px_90px_-52px_rgba(15,23,42,0.45)] transition-all sm:p-8">
                         
                         <div className="mb-6 flex items-start justify-between">
                             <div>
@@ -354,7 +352,7 @@ export default function ResumeReview() {
                             <button
                                 type="button"
                                 onClick={() => setShowUploadForm(false)}
-                                className="rounded-full bg-slate-100 p-2 text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition-colors flex-shrink-0"
+                                className="rounded-full p-2 text-slate-500 hover:text-slate-700 transition-colors flex-shrink-0"
                             >
                                 <X className="h-5 w-5" />
                             </button>
@@ -373,7 +371,7 @@ export default function ResumeReview() {
 
                             <div>
                                 <label className="mb-2 block text-sm font-semibold text-slate-700">Resume File (PDF, DOC)</label>
-                                <div className="relative flex w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-6 py-8 transition-colors hover:bg-slate-100 hover:border-indigo-300 text-center">
+                                <div className="relative flex w-full flex-col items-center justify-center rounded-2xl bg-slate-50/70 px-6 py-8 transition-colors hover:bg-slate-50 text-center">
                                     <input
                                         type="file"
                                         accept=".pdf,.doc,.docx"
@@ -399,7 +397,7 @@ export default function ResumeReview() {
                             </div>
 
                             {selectedFile && (
-                                <div className="flex items-center gap-3 rounded-xl border border-indigo-100 bg-indigo-50/50 p-3">
+                                <div className="flex items-center gap-3 rounded-2xl bg-slate-50/80 p-3">
                                     <GraduationCap className="h-8 w-8 text-indigo-500 flex-shrink-0" />
                                     <div className="min-w-0 flex-1">
                                         <p className="truncate text-sm font-semibold text-slate-700">
@@ -411,7 +409,7 @@ export default function ResumeReview() {
                                             type="button"
                                             disabled={isFileUploading}
                                             onClick={uploadResumeFile}
-                                            className="flex-shrink-0 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-indigo-700 ring-1 ring-inset ring-indigo-200 shadow-sm transition hover:bg-indigo-50 disabled:opacity-50"
+                                            className="flex-shrink-0 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-indigo-700 ring-1 ring-inset ring-indigo-200 shadow-sm transition hover:-translate-y-0.5 disabled:opacity-50"
                                         >
                                             {isFileUploading ? 'Uploading...' : 'Upload File'}
                                         </button>
@@ -425,15 +423,15 @@ export default function ResumeReview() {
                             )}
 
                             {previewUrl && (
-                                <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                                    <div className="flex items-center justify-between border-b border-slate-200 bg-slate-100 px-4 py-2">
+                                <div className="overflow-hidden rounded-2xl bg-white shadow-[0_20px_40px_-34px_rgba(79,70,229,0.5)]">
+                                    <div className="flex items-center justify-between bg-white px-4 py-2">
                                         <span className="text-xs font-bold uppercase text-slate-600">Preview</span>
                                     </div>
                                     <iframe src={previewUrl} title="Resume preview" className="h-[300px] w-full sm:h-[400px]" />
                                 </div>
                             )}
 
-                            <div className="mt-8 flex items-center justify-end gap-3 border-t border-slate-100 pt-5">
+                            <div className="mt-8 flex items-center justify-end gap-3 pt-5">
                                 <button
                                     type="button"
                                     onClick={() => setShowUploadForm(false)}
