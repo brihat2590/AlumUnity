@@ -345,7 +345,7 @@ export default function Home() {
           <div className="space-y-6">
             <div className="font-headline text-xl font-bold tracking-tighter text-slate-900">AlumUnity</div>
             <p className="max-w-xs font-body text-[11px] uppercase tracking-widest leading-loose text-slate-400">
-              © 2024 AlumUnity. The Digital Curator for Alumni Excellence. Crafted for institutional prestige.
+              © 2026 AlumUnity. The Digital Curator for Alumni Excellence. Crafted for institutional prestige.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-12 md:grid-cols-4">
