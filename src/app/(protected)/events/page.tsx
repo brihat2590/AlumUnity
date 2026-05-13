@@ -15,7 +15,6 @@ import { Label } from '@/components/ui/label';
 import { createEvent, getAllEvents } from '@/firebase/event.controller';
 import { toast } from 'sonner';
 import { useFirebase } from '@/firebase/firebase.config';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 const Events = () => {
@@ -57,8 +56,6 @@ const Events = () => {
     }
   };
    function ConfirmJoinLink({ meetLink }: { meetLink: string }) {
-    const router = useRouter();
-  
     const handleConfirm = () => {
       window.location.href=meetLink
     };

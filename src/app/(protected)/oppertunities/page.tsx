@@ -16,7 +16,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { useFirebase } from "@/firebase/firebase.config";
 import { getUserInfo } from "@/firebase/user.controller";
-import { ArrowDown, Globe, MapPin, Wallet, BriefcaseBusiness, Edit2 } from "lucide-react";
+import { Globe, MapPin, Wallet, BriefcaseBusiness, Edit2 } from "lucide-react";
 import { FaSpinner } from "react-icons/fa";
 import { Inter, Manrope } from "next/font/google";
 
@@ -80,7 +80,7 @@ const Opportunities = () => {
       Company: opp.Company || "",
       companyUrl: opp.companyUrl || "",
       logoUrl: opp.logoUrl || "",
-      type: (opp.type || "") as any,
+      type: opp.type || "",
       location: opp.location || "",
       salary: opp.salary || "",
       applicationLink: opp.applicationLink || "",

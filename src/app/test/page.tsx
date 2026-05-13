@@ -1,13 +1,10 @@
-"use client"
+'use client'
 import { Button } from '@/components/ui/button'
 import UserAvatar from '@/components/UserAvatar'
-import { createEvent, getAllEvents, getLatestThreeEvents } from '@/firebase/event.controller'
-import { createOpportunity, getAllOpportunities } from '@/firebase/oppertunities.controller'
-import { createOrremoveDownvoteForQuestions, createOrremoveDownvoteForReplies, createOrremoveUpvoteForQuestions, createOrremoveUpvoteForReplies, createQuestion, createReply, getAllQuestions, getQuestionById, getThreeQuestionsWithMostUpvotes } from '@/firebase/questions.controller'
-import { getUserInfo, saveUserAfterLogin, updateUserInfo } from '@/firebase/user.controller'
-import React, { use, useEffect } from 'react'
+import { createReply } from '@/firebase/questions.controller'
+import React, { useEffect } from 'react'
 // this is just a temporary test file to test the controller functions 
-const page = () => {
+const Page = () => {
 
     useEffect(() => {
         const handler = async () => {
@@ -83,4 +80,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

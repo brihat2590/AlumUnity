@@ -6,7 +6,7 @@ import React, { ReactNode, useEffect } from 'react';
 import { FaSpinner } from 'react-icons/fa';
 
 const Layout = ({ children }: { children: ReactNode }) => {
-  const { loggedInUser, authloading, isUserLoggedIn } = useFirebase();
+  const { authloading, isUserLoggedIn } = useFirebase();
   const router = useRouter();
 
   useEffect(() => {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Button } from './ui/button';
 import { GraduationCap, BookOpen } from 'lucide-react';
 
 export const Cta: React.FC = () => {
@@ -30,7 +29,7 @@ export const Cta: React.FC = () => {
               </h2>
               
               <p className="text-lg text-gray-700 mb-8 max-w-lg">
-                Connect with alumni who've walked your path. Get personalized mentorship, 
+                Connect with alumni who&apos;ve walked your path. Get personalized mentorship, 
                 career guidance, and insights that will help shape your future success.
               </p>
               

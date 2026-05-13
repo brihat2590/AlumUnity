@@ -9,7 +9,7 @@ import {
   SpeakerLayout,
   StreamVideoClient,
 } from "@stream-io/video-react-sdk";
-// @ts-ignore
+// @ts-expect-error Stream styles are provided by the SDK package at runtime.
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import { useFirebase } from "@/firebase/firebase.config";
 import { useParams } from "next/navigation";

@@ -8,8 +8,8 @@ type QuoteProps = {
 const QuoteDisplay: React.FC<QuoteProps> = ({ quote, author }) => {
   return (
     <div className="mb-6">
-      <blockquote className="italic text-lg text-gray-600 mb-2">
-        "{quote}"
+      <blockquote className="mb-2 text-lg italic text-gray-600">
+        &ldquo;{quote}&rdquo;
       </blockquote>
       {author && (
         <cite className="block text-sm text-gray-500 not-italic">— {author}</cite>
