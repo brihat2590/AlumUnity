@@ -5,7 +5,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -202,7 +201,7 @@ const Opportunities = () => {
           </p>
         </header>
 
-        <main className="mx-auto max-w-7xl px-6 pb-32">
+        <main className="mx-auto max-w-7xl px-6 pb-24">
           {isLoading ? (
             <div className="flex items-center justify-center h-[40vh]">
               <FaSpinner className="animate-spin text-xl" />
@@ -339,28 +338,33 @@ const Opportunities = () => {
           
        
 
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={openAddDialog} className="fixed bottom-12 right-12 z-50 h-16 w-16 rounded-full bg-[#0f172a] text-white shadow-2xl transition-transform hover:scale-110 active:scale-95">
-              +
-            </Button>
-          </DialogTrigger>
-
-          <DialogContent className="bg-white max-h-[90vh] overflow-y-auto rounded-2xl border-slate-100 p-8 sm:max-w-[620px]">
-            <DialogHeader>
-              <DialogTitle
-                className="text-2xl font-bold text-[#0f172a]"
-                style={{ fontFamily: "var(--font-manrope)" }}
+        <div className="fixed bottom-8 right-8 z-50">
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button
+                onClick={openAddDialog}
+                className="h-14 w-14 rounded-full bg-[#0f172a] text-white shadow-xl transition-transform hover:scale-110 active:scale-95"
+                aria-label="Add opportunity"
               >
-                {editingId ? "Edit Opportunity" : "Add Opportunity"}
-              </DialogTitle>
+                +
+              </Button>
+            </DialogTrigger>
 
-              <DialogDescription className="text-slate-500">
-                {editingId 
-                  ? "Update the details for this opportunity." 
-                  : "Fill in the opportunity details. Please include the company URL so the listing looks more complete and polished."}
-              </DialogDescription>
-            </DialogHeader>
+            <DialogContent className="max-h-[90vh] overflow-y-auto rounded-2xl border-slate-100 bg-white p-8 sm:max-w-[620px]">
+              <DialogHeader>
+                <DialogTitle
+                  className="text-2xl font-bold text-[#0f172a]"
+                  style={{ fontFamily: "var(--font-manrope)" }}
+                >
+                  {editingId ? "Edit Opportunity" : "Add Opportunity"}
+                </DialogTitle>
+
+                <DialogDescription className="text-slate-500">
+                  {editingId
+                    ? "Update the details for this opportunity."
+                    : "Fill in the opportunity details. Please include the company URL so the listing looks more complete and polished."}
+                </DialogDescription>
+              </DialogHeader>
 
             <div className="grid gap-5 py-4">
               <div className="grid gap-2">
@@ -443,13 +447,14 @@ const Opportunities = () => {
               </div>
             </div>
 
-            <DialogFooter>
-              <Button type="button" onClick={handleSaveOpportunity} className="bg-indigo-600 text-white hover:bg-indigo-700">
+              <div className="mt-2 flex justify-end">
+                <Button type="button" onClick={handleSaveOpportunity} className="bg-[#0f172a] text-white hover:bg-slate-800">
                 {editingId ? "Update Opportunity" : "Save Opportunity"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <style jsx global>{`

@@ -7,13 +7,56 @@
   font-family: var(--font-headline), sans-serif;
 }
 
+.font-display {
+  font-family: var(--font-headline), sans-serif;
+}
+
 .font-body {
   font-family: var(--font-body), sans-serif;
+}
+
+.font-label {
+  font-family: var(--font-body), sans-serif;
+}
+
+.text-label-md {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .glass-nav {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.signature-gradient {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+}
+
+.editorial-shadow {
+  box-shadow: 0 20px 40px rgba(48, 41, 80, 0.06);
+}
+
+.animate-float {
+  animation: float 12s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-30px) scale(1.05);
+  }
 }
 
 .material-symbols-outlined {

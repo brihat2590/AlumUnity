@@ -1,19 +1,39 @@
-import React from 'react';
+import { cn } from "@/lib/utils";
 
-const UserAvatar = ({ userImageUrl, userName } : {userImageUrl : string , userName : string}) => {
+type UserAvatarProps = {
+  userImageUrl?: string;
+  userName: string;
+  className?: string;
+};
+
+const getInitials = (userName: string) => {
+  const initials = userName
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  return initials || "?";
+};
+
+const UserAvatar = ({ userImageUrl, userName, className }: UserAvatarProps) => {
   const hasImage = Boolean(userImageUrl);
-  const initials = userName?.charAt(0).toUpperCase();
+  const initials = getInitials(userName);
 
   return (
-    <div className="w-10 h-10 rounded-full bg-gray-400 text-white flex items-center justify-center text-lg font-semibold overflow-hidden">
+    <div
+      className={cn(
+        "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 text-sm font-semibold text-slate-700",
+        className
+      )}
+    >
       {hasImage ? (
-        <img
-          src={userImageUrl}
-          alt={userName}
-          className="w-full h-full object-cover"
-        />
+        <img src={userImageUrl} alt={userName} className="h-full w-full object-cover" />
       ) : (
-        initials
+        <span aria-hidden="true">{initials}</span>
       )}
     </div>
   );

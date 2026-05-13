@@ -29,7 +29,9 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
   const pc = useRef<RTCPeerConnection | null>(null);
   const localStream = useRef<MediaStream | null>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
+  const localAudioRef = useRef<HTMLAudioElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteAudioRef = useRef<HTMLAudioElement>(null);
   const pendingOffer = useRef<RTCSessionDescriptionInit | null>(null);
   const pendingAnswer = useRef<RTCSessionDescriptionInit | null>(null);
   const pendingCandidates = useRef<RTCIceCandidateInit[]>([]);
@@ -222,8 +224,10 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
         stream.getVideoTracks().forEach((track) => {
           track.enabled = isCameraOn;
         });
-        if (localVideoRef.current) {
+        if (mode === "video" && localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
+        } else if (mode === "voice" && localAudioRef.current) {
+          localAudioRef.current.srcObject = stream;
         }
 
         pc.current = new RTCPeerConnection({
@@ -235,8 +239,13 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
         });
 
         pc.current.ontrack = (event) => {
-          if (remoteVideoRef.current) {
+          if (mode === "video" && remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = event.streams[0];
+          } else if (mode === "voice" && remoteAudioRef.current) {
+            remoteAudioRef.current.srcObject = event.streams[0];
+            void remoteAudioRef.current.play().catch(() => {
+              // Autoplay can still be blocked by the browser until the user interacts.
+            });
           }
         };
 
@@ -286,35 +295,45 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-black p-4 text-white">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 p-4 text-slate-900">
       <div className="mb-6 text-center">
-        <h2 className="text-xl font-bold">{status}</h2>
-        <p className="mt-1 text-sm text-white/60">
+        <h2 className="text-xl font-bold text-slate-900">{status}</h2>
+        <p className="mt-1 text-sm text-slate-500">
           Room {roomId} · {participantCount} participant{participantCount === 1 ? "" : "s"}
           {role ? ` · ${role}` : ""} · {mode === "video" ? "video" : "voice"} call
         </p>
       </div>
 
       <div className="grid w-full max-w-5xl grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="relative overflow-hidden rounded-lg border border-gray-700 bg-gray-900">
-          <p className="absolute left-2 top-2 rounded bg-black/50 px-2 py-1 text-xs">You</p>
+        <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+          <p className="absolute left-3 top-3 rounded-full border border-slate-200 bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-600">
+            You
+          </p>
           {mode === "video" ? (
             <video ref={localVideoRef} autoPlay playsInline muted className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-80 min-h-[320px] items-center justify-center bg-gradient-to-br from-slate-950 to-slate-800 text-sm text-white/70">
-              Voice call active
-            </div>
+            <>
+              <audio ref={localAudioRef} autoPlay muted playsInline className="hidden" />
+              <div className="flex h-80 min-h-[320px] items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 text-sm text-slate-500">
+                Voice call active
+              </div>
+            </>
           )}
         </div>
 
-        <div className="relative overflow-hidden rounded-lg border border-gray-700 bg-gray-900">
-          <p className="absolute left-2 top-2 rounded bg-black/50 px-2 py-1 text-xs">Remote</p>
+        <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+          <p className="absolute left-3 top-3 rounded-full border border-slate-200 bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-600">
+            Remote
+          </p>
           {mode === "video" ? (
             <video ref={remoteVideoRef} autoPlay playsInline className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-80 min-h-[320px] items-center justify-center bg-gradient-to-br from-slate-950 to-slate-800 text-sm text-white/70">
-              Remote voice participant
-            </div>
+            <>
+              <audio ref={remoteAudioRef} autoPlay playsInline className="hidden" />
+              <div className="flex h-80 min-h-[320px] items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 text-sm text-slate-500">
+                Remote voice participant
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -323,7 +342,7 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
         <button
           type="button"
           onClick={() => setIsMuted((current) => !current)}
-          className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm transition-colors hover:bg-white/10"
+          className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 transition-colors hover:bg-slate-50"
         >
           {isMuted ? "Unmute" : "Mute"}
         </button>
@@ -331,7 +350,7 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
           type="button"
           onClick={() => setIsCameraOn((current) => !current)}
           disabled={mode === "voice"}
-          className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isCameraOn ? "Camera off" : "Camera on"}
         </button>
