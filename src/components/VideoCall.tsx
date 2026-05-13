@@ -15,9 +15,19 @@ type CallRole = "caller" | "callee" | null;
 
 type SignalName = "video-offer" | "video-answer" | "ice-candidate";
 
+type PresenceMember = {
+  id?: string;
+  info?: {
+    user_id?: string;
+    user_name?: string;
+    user_image_url?: string;
+  };
+};
+
 type PusherChannel = {
   members?: {
     count: number;
+    members?: Record<string, PresenceMember>;
   };
   bind: (eventName: string, callback: (...args: unknown[]) => void) => void;
   unbind_all: () => void;
@@ -49,6 +59,8 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
   const pendingOffer = useRef<RTCSessionDescriptionInit | null>(null);
   const pendingAnswer = useRef<RTCSessionDescriptionInit | null>(null);
   const pendingCandidates = useRef<RTCIceCandidateInit[]>([]);
+  const cameraTrackRef = useRef<MediaStreamTrack | null>(null);
+  const microphoneTrackRef = useRef<MediaStreamTrack | null>(null);
   const offerSent = useRef(false);
   const roleRef = useRef<CallRole>(null);
   const peerJoined = useRef(false);
@@ -171,6 +183,37 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
       tick();
     };
 
+    const resolveRemoteIdentity = async (memberId: string | undefined, member: PresenceMember | undefined) => {
+      if (!memberId || memberId === loggedInUser?.uid) {
+        return;
+      }
+
+      const fallbackName = member?.info?.user_name?.trim();
+      const fallbackPhoto = member?.info?.user_image_url?.trim();
+
+      if (fallbackName || fallbackPhoto) {
+        setRemoteIdentity({
+          name: fallbackName || "Participant",
+          photoUrl: fallbackPhoto || undefined,
+        });
+      }
+
+      try {
+        const response = await getUserInfo(memberId);
+        if (!response.success) {
+          return;
+        }
+
+        const remoteUser = response.data as UserData;
+        setRemoteIdentity({
+          name: remoteUser.name?.trim() || fallbackName || "Participant",
+          photoUrl: remoteUser.profilePic?.trim() || fallbackPhoto || undefined,
+        });
+      } catch (error) {
+        console.error("Failed to resolve remote identity:", error);
+      }
+    };
+
     const flushPendingCandidates = async () => {
       if (!pc.current?.remoteDescription || pendingCandidates.current.length === 0) {
         return;
@@ -230,18 +273,15 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
         channel.bind("pusher:subscription_succeeded", () => {
           const count = channel?.members?.count ?? 0;
           const nextRole: CallRole = count <= 1 ? "caller" : "callee";
-          const members = (channel as unknown as { members?: { members?: Record<string, { info?: { user_name?: string; user_image_url?: string } }> } })?.members?.members;
-          const remoteMember = members ? Object.values(members).find((member) => member.info?.user_name !== localDisplayName) : undefined;
+          const members = channel?.members?.members || {};
+          const remoteEntry = Object.entries(members).find(([memberId]) => memberId !== (loggedInUser?.uid || localUserId.current));
+          const remoteMemberId = remoteEntry?.[0];
+          const remoteMember = remoteEntry?.[1];
 
           roleRef.current = nextRole;
           setRole(nextRole);
           setParticipantCount(count);
-          if (remoteMember?.info) {
-            setRemoteIdentity({
-              name: remoteMember.info.user_name || "Participant",
-              photoUrl: remoteMember.info.user_image_url || undefined,
-            });
-          }
+          void resolveRemoteIdentity(remoteMemberId, remoteMember);
           peerJoined.current = count > 1;
           setStatus(count > 1 ? "Connected. Joining call..." : "Waiting for another participant...");
 
@@ -249,17 +289,12 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
         });
 
         channel.bind("pusher:member_added", (...args: unknown[]) => {
-          const member = args[0] as { info?: { user_name?: string; user_image_url?: string } } | undefined;
+          const member = args[0] as PresenceMember | undefined;
           const count = channel?.members?.count ?? 0;
           setParticipantCount(count);
           peerJoined.current = count > 1;
 
-          if (member?.info?.user_name) {
-            setRemoteIdentity({
-              name: member.info.user_name,
-              photoUrl: member.info.user_image_url || undefined,
-            });
-          }
+          void resolveRemoteIdentity(member?.id || member?.info?.user_id, member);
 
           if (peerJoined.current) {
             setStatus(roleRef.current === "caller" ? "Calling..." : "Connecting...");
@@ -341,6 +376,7 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
 
         localStream.current = stream;
         setLocalStreamState(stream);
+        microphoneTrackRef.current = stream.getAudioTracks()[0] || null;
         if (mode === "voice") {
           monitorSpeech(stream, setLocalSpeaking, localSpeechContext, localSpeechFrame);
         }
@@ -405,6 +441,7 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
       pusher.disconnect();
       pc.current?.close();
       localStream.current?.getTracks().forEach((track) => track.stop());
+      cameraTrackRef.current = null;
     };
   }, [roomId, mode]);
 
@@ -416,11 +453,122 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
   }, [isMuted]);
 
   useEffect(() => {
-    const videoTracks = localStream.current?.getVideoTracks() ?? [];
-    videoTracks.forEach((track) => {
-      track.enabled = isCameraOn;
-    });
+    if (mode !== "video") {
+      return;
+    }
+
+    const applyCameraState = async () => {
+      const currentStream = localStream.current;
+
+      if (!currentStream) {
+        return;
+      }
+
+      if (!isCameraOn) {
+        const videoTracks = currentStream.getVideoTracks();
+        videoTracks.forEach((track) => {
+          track.enabled = false;
+          track.stop();
+        });
+        cameraTrackRef.current = null;
+        setLocalStreamState(new MediaStream(currentStream.getAudioTracks()));
+        return;
+      }
+
+      const existingTrack = currentStream.getVideoTracks()[0];
+      if (existingTrack && existingTrack.readyState === "live") {
+        existingTrack.enabled = true;
+        cameraTrackRef.current = existingTrack;
+        setLocalStreamState(new MediaStream([existingTrack, ...currentStream.getAudioTracks()]));
+        return;
+      }
+
+      try {
+        const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        const videoTrack = cameraStream.getVideoTracks()[0];
+
+        if (!videoTrack) {
+          return;
+        }
+
+        cameraTrackRef.current = videoTrack;
+
+        const nextAudioTracks = currentStream.getAudioTracks();
+        const nextStream = new MediaStream([videoTrack, ...nextAudioTracks]);
+        localStream.current = nextStream;
+        setLocalStreamState(nextStream);
+
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = nextStream;
+        }
+
+        const senders = pc.current?.getSenders() ?? [];
+        const videoSender = senders.find((sender) => sender.track?.kind === "video");
+        if (videoSender) {
+          await videoSender.replaceTrack(videoTrack);
+        } else {
+          pc.current?.addTrack(videoTrack, nextStream);
+        }
+      } catch (error) {
+        console.error("Failed to enable camera:", error);
+        setIsCameraOn(false);
+      }
+    };
+
+    void applyCameraState();
   }, [isCameraOn]);
+
+  useEffect(() => {
+    const syncMicrophoneState = async () => {
+      const currentStream = localStream.current;
+      if (!currentStream) {
+        return;
+      }
+
+      const audioTracks = currentStream.getAudioTracks();
+      const activeTrack = audioTracks[0] || microphoneTrackRef.current;
+
+      if (!activeTrack || activeTrack.readyState !== "live") {
+        try {
+          const micStream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+          const micTrack = micStream.getAudioTracks()[0];
+
+          if (!micTrack) {
+            return;
+          }
+
+          microphoneTrackRef.current = micTrack;
+          micTrack.enabled = !isMuted;
+
+          const existingVideoTracks = currentStream.getVideoTracks();
+          const nextStream = new MediaStream([...existingVideoTracks, micTrack]);
+          localStream.current = nextStream;
+          setLocalStreamState(nextStream);
+
+          if (localAudioRef.current) {
+            localAudioRef.current.srcObject = nextStream;
+          }
+
+          const senders = pc.current?.getSenders() ?? [];
+          const audioSender = senders.find((sender) => sender.track?.kind === "audio");
+          if (audioSender) {
+            await audioSender.replaceTrack(micTrack);
+          } else {
+            pc.current?.addTrack(micTrack, nextStream);
+          }
+          return;
+        } catch (error) {
+          console.error("Failed to reacquire microphone:", error);
+          return;
+        }
+      }
+
+      activeTrack.enabled = !isMuted;
+      microphoneTrackRef.current = activeTrack;
+    };
+
+    void syncMicrophoneState();
+  }, [isMuted]);
 
   useEffect(() => {
     if (mode === "video" && localVideoRef.current && localStreamState) {
@@ -435,6 +583,12 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
   }, [remoteStreamState, mode]);
 
   const hangUp = () => {
+    localStream.current?.getTracks().forEach((track) => track.stop());
+    localStream.current = null;
+    setLocalStreamState(null);
+    setRemoteStreamState(null);
+    cameraTrackRef.current = null;
+    microphoneTrackRef.current = null;
     window.location.href = "/call";
   };
 
