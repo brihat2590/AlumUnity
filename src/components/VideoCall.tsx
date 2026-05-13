@@ -422,6 +422,18 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
     });
   }, [isCameraOn]);
 
+  useEffect(() => {
+    if (mode === "video" && localVideoRef.current && localStreamState) {
+      localVideoRef.current.srcObject = localStreamState;
+    }
+  }, [localStreamState, mode]);
+
+  useEffect(() => {
+    if (mode === "video" && remoteVideoRef.current && remoteStreamState) {
+      remoteVideoRef.current.srcObject = remoteStreamState;
+    }
+  }, [remoteStreamState, mode]);
+
   const hangUp = () => {
     window.location.href = "/call";
   };
