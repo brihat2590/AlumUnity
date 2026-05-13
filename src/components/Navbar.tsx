@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Menu, X, GraduationCap } from 'lucide-react';
+import { Menu, X, GraduationCap, PhoneCall } from 'lucide-react';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 
@@ -25,11 +25,17 @@ export const Navbar: React.FC = () => {
     { name: 'How It Works', href: '#how-it-works' },
     { name: 'For Students', href: '#for-students' },
     { name: 'For Alumni', href: '#for-alumni' },
+    { name: 'Calls', href: '/call' },
   ];
 
   const handleGetStarted = () => {
     setIsOpen(false);
     router.push("/sign-in");
+  };
+
+  const handleCall = () => {
+    setIsOpen(false);
+    router.push("/call");
   };
 
   return (
@@ -69,7 +75,11 @@ export const Navbar: React.FC = () => {
           </nav>
 
           {/* Desktop Get Started Button */}
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-3">
+            <Button variant="outline" onClick={handleCall} className="gap-2">
+              <PhoneCall className="h-4 w-4" />
+              Calls
+            </Button>
             <Button onClick={handleGetStarted}>
               Get Started
             </Button>
@@ -111,7 +121,12 @@ export const Navbar: React.FC = () => {
             ))}
 
             {/* Mobile Get Started Button */}
-            <Button  onClick={handleGetStarted}>
+            <Button variant="outline" onClick={handleCall} className="gap-2">
+              <PhoneCall className="h-4 w-4" />
+              Calls
+            </Button>
+
+            <Button onClick={handleGetStarted}>
               Get Started
             </Button>
           </div>

@@ -1,5 +1,5 @@
 import { firebasedb } from './firebase.config';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 
 export const saveUserAfterLogin = async (userId: string, email?: string | null, name?: string | null) => {
     try {
@@ -30,6 +30,28 @@ export const saveUserAfterLogin = async (userId: string, email?: string | null, 
         return {
             success: false,
             message: `Failed to add user email to db: ${error.message}`,
+        };
+    }
+};
+
+export const getAllUsers = async () => {
+    try {
+        const usersCollectionRef = collection(firebasedb, 'users');
+        const querySnapshot = await getDocs(usersCollectionRef);
+
+        const users = querySnapshot.docs.map((userDoc) => ({
+            id: userDoc.id,
+            ...(userDoc.data() as UserData),
+        }));
+
+        return {
+            success: true,
+            data: users,
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            message: `Failed to fetch users: ${error.message}`,
         };
     }
 };
