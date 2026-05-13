@@ -1,7 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Pusher from "pusher-js";
+import { useFirebase } from "@/firebase/firebase.config";
+import { getUserInfo } from "@/firebase/user.controller";
+import UserAvatar from "@/components/UserAvatar";
 
 interface Props {
   roomId: string;
@@ -21,17 +24,28 @@ type PusherChannel = {
 };
 
 export default function VideoCall({ roomId, mode = "video" }: Props) {
+  const { loggedInUser } = useFirebase();
   const [status, setStatus] = useState("Initializing...");
   const [participantCount, setParticipantCount] = useState(0);
   const [role, setRole] = useState<CallRole>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(mode === "video");
+  const [localIdentity, setLocalIdentity] = useState<{ name: string; photoUrl?: string } | null>(null);
+  const [remoteIdentity, setRemoteIdentity] = useState<{ name: string; photoUrl?: string } | null>(null);
+  const [localSpeaking, setLocalSpeaking] = useState(false);
+  const [remoteSpeaking, setRemoteSpeaking] = useState(false);
+  const [localStreamState, setLocalStreamState] = useState<MediaStream | null>(null);
+  const [remoteStreamState, setRemoteStreamState] = useState<MediaStream | null>(null);
   const pc = useRef<RTCPeerConnection | null>(null);
   const localStream = useRef<MediaStream | null>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const localAudioRef = useRef<HTMLAudioElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const remoteAudioRef = useRef<HTMLAudioElement>(null);
+  const localSpeechFrame = useRef<number | null>(null);
+  const remoteSpeechFrame = useRef<number | null>(null);
+  const localSpeechContext = useRef<AudioContext | null>(null);
+  const remoteSpeechContext = useRef<AudioContext | null>(null);
   const pendingOffer = useRef<RTCSessionDescriptionInit | null>(null);
   const pendingAnswer = useRef<RTCSessionDescriptionInit | null>(null);
   const pendingCandidates = useRef<RTCIceCandidateInit[]>([]);
@@ -41,7 +55,62 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
   const localUserId = useRef(
     typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `guest-${Date.now()}`
   );
+  const localDisplayName = useMemo(() => {
+    return (
+      localIdentity?.name ||
+      loggedInUser?.displayName ||
+      loggedInUser?.email?.split("@")[0] ||
+      "You"
+    );
+  }, [localIdentity?.name, loggedInUser?.displayName, loggedInUser?.email]);
+  const localPhotoUrl = localIdentity?.photoUrl || loggedInUser?.photoURL || "";
   const channelName = `presence-video-${roomId}`;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadLocalIdentity = async () => {
+      if (!loggedInUser?.uid) {
+        return;
+      }
+
+      let photoUrl = loggedInUser.photoURL || "";
+
+      const response = await getUserInfo(loggedInUser.uid);
+      if (response.success) {
+        const userInfo = response.data as UserData;
+        photoUrl = userInfo.profilePic || photoUrl;
+      }
+
+      if (!isMounted) {
+        return;
+      }
+
+      setLocalIdentity({
+        name: loggedInUser.displayName || loggedInUser.email?.split("@")[0] || "You",
+        photoUrl: photoUrl || undefined,
+      });
+    };
+
+    void loadLocalIdentity();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [loggedInUser?.uid, loggedInUser?.displayName, loggedInUser?.email, loggedInUser?.photoURL]);
+
+  useEffect(() => {
+    return () => {
+      if (localSpeechFrame.current !== null) {
+        cancelAnimationFrame(localSpeechFrame.current);
+      }
+      if (remoteSpeechFrame.current !== null) {
+        cancelAnimationFrame(remoteSpeechFrame.current);
+      }
+      void localSpeechContext.current?.close();
+      void remoteSpeechContext.current?.close();
+    };
+  }, []);
 
   const sendSignal = async (eventName: SignalName, data: unknown) => {
     await fetch("/api/web-rtc/signal", {
@@ -60,10 +129,47 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
         transport: "ajax",
         endpoint: "/api/pusher/auth",
         params: {
-          user_id: localUserId.current,
+          user_id: loggedInUser?.uid || localUserId.current,
+          user_name: localDisplayName,
+          user_image_url: localPhotoUrl,
         },
       },
     });
+
+    const monitorSpeech = (
+      stream: MediaStream,
+      setSpeaking: (speaking: boolean) => void,
+      contextRef: { current: AudioContext | null },
+      frameRef: { current: number | null }
+    ) => {
+      const AudioContextCtor = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+
+      if (!AudioContextCtor) {
+        return;
+      }
+
+      void contextRef.current?.close();
+      if (frameRef.current !== null) {
+        cancelAnimationFrame(frameRef.current);
+      }
+
+      const audioContext = new AudioContextCtor();
+      contextRef.current = audioContext;
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 256;
+      const source = audioContext.createMediaStreamSource(stream);
+      source.connect(analyser);
+      const values = new Uint8Array(analyser.frequencyBinCount);
+
+      const tick = () => {
+        analyser.getByteFrequencyData(values);
+        const average = values.reduce((sum, value) => sum + value, 0) / values.length;
+        setSpeaking(average > 18);
+        frameRef.current = requestAnimationFrame(tick);
+      };
+
+      tick();
+    };
 
     const flushPendingCandidates = async () => {
       if (!pc.current?.remoteDescription || pendingCandidates.current.length === 0) {
@@ -124,20 +230,36 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
         channel.bind("pusher:subscription_succeeded", () => {
           const count = channel?.members?.count ?? 0;
           const nextRole: CallRole = count <= 1 ? "caller" : "callee";
+          const members = (channel as unknown as { members?: { members?: Record<string, { info?: { user_name?: string; user_image_url?: string } }> } })?.members?.members;
+          const remoteMember = members ? Object.values(members).find((member) => member.info?.user_name !== localDisplayName) : undefined;
 
           roleRef.current = nextRole;
           setRole(nextRole);
           setParticipantCount(count);
+          if (remoteMember?.info) {
+            setRemoteIdentity({
+              name: remoteMember.info.user_name || "Participant",
+              photoUrl: remoteMember.info.user_image_url || undefined,
+            });
+          }
           peerJoined.current = count > 1;
           setStatus(count > 1 ? "Connected. Joining call..." : "Waiting for another participant...");
 
           void startCallerOffer();
         });
 
-        channel.bind("pusher:member_added", () => {
+        channel.bind("pusher:member_added", (...args: unknown[]) => {
+          const member = args[0] as { info?: { user_name?: string; user_image_url?: string } } | undefined;
           const count = channel?.members?.count ?? 0;
           setParticipantCount(count);
           peerJoined.current = count > 1;
+
+          if (member?.info?.user_name) {
+            setRemoteIdentity({
+              name: member.info.user_name,
+              photoUrl: member.info.user_image_url || undefined,
+            });
+          }
 
           if (peerJoined.current) {
             setStatus(roleRef.current === "caller" ? "Calling..." : "Connecting...");
@@ -218,6 +340,10 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
         }
 
         localStream.current = stream;
+        setLocalStreamState(stream);
+        if (mode === "voice") {
+          monitorSpeech(stream, setLocalSpeaking, localSpeechContext, localSpeechFrame);
+        }
         stream.getAudioTracks().forEach((track) => {
           track.enabled = !isMuted;
         });
@@ -239,6 +365,12 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
         });
 
         pc.current.ontrack = (event) => {
+          setRemoteStreamState(event.streams[0]);
+
+          if (mode === "voice") {
+            monitorSpeech(event.streams[0], setRemoteSpeaking, remoteSpeechContext, remoteSpeechFrame);
+          }
+
           if (mode === "video" && remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = event.streams[0];
           } else if (mode === "voice" && remoteAudioRef.current) {
@@ -309,13 +441,26 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
           <p className="absolute left-3 top-3 rounded-full border border-slate-200 bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-600">
             You
           </p>
-          {mode === "video" ? (
+          {mode === "video" && isCameraOn && localStreamState ? (
             <video ref={localVideoRef} autoPlay playsInline muted className="h-full w-full object-cover" />
           ) : (
             <>
               <audio ref={localAudioRef} autoPlay muted playsInline className="hidden" />
-              <div className="flex h-80 min-h-[320px] items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 text-sm text-slate-500">
-                Voice call active
+              <div className="flex h-80 min-h-[320px] flex-col items-center justify-center gap-3 bg-gradient-to-br from-slate-100 to-slate-200 text-sm text-slate-500">
+                <UserAvatar
+                  userImageUrl={localPhotoUrl || undefined}
+                  userName={localDisplayName}
+                  className="h-28 w-28 border-slate-200 bg-white text-xl shadow-sm"
+                />
+                <div className="text-center">
+                  <div className="font-medium text-slate-700">{localDisplayName}</div>
+                  <div className="text-xs text-slate-500">{mode === "voice" ? "Voice call active" : "Camera off"}</div>
+                  {(mode === "voice" ? localSpeaking : !isCameraOn) ? (
+                    <span className="mt-3 inline-flex items-center rounded-full border border-cyan-100 bg-gradient-to-r from-cyan-300 via-sky-400 to-indigo-400 bg-[length:200%_100%] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white [animation:shimmer-sweep_1.3s_linear_infinite]">
+                      Speaking
+                    </span>
+                  ) : null}
+                </div>
               </div>
             </>
           )}
@@ -325,13 +470,26 @@ export default function VideoCall({ roomId, mode = "video" }: Props) {
           <p className="absolute left-3 top-3 rounded-full border border-slate-200 bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-600">
             Remote
           </p>
-          {mode === "video" ? (
+          {mode === "video" && remoteStreamState?.getVideoTracks().length ? (
             <video ref={remoteVideoRef} autoPlay playsInline className="h-full w-full object-cover" />
           ) : (
             <>
               <audio ref={remoteAudioRef} autoPlay playsInline className="hidden" />
-              <div className="flex h-80 min-h-[320px] items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 text-sm text-slate-500">
-                Remote voice participant
+              <div className="flex h-80 min-h-[320px] flex-col items-center justify-center gap-3 bg-gradient-to-br from-slate-100 to-slate-200 text-sm text-slate-500">
+                <UserAvatar
+                  userImageUrl={remoteIdentity?.photoUrl}
+                  userName={remoteIdentity?.name || "Participant"}
+                  className="h-28 w-28 border-slate-200 bg-white text-xl shadow-sm"
+                />
+                <div className="text-center">
+                  <div className="font-medium text-slate-700">{remoteIdentity?.name || "Remote participant"}</div>
+                  <div className="text-xs text-slate-500">{mode === "voice" ? "Voice call active" : "Camera off"}</div>
+                  {mode === "voice" && remoteSpeaking ? (
+                    <span className="mt-3 inline-flex items-center rounded-full border border-cyan-100 bg-gradient-to-r from-cyan-300 via-sky-400 to-indigo-400 bg-[length:200%_100%] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white [animation:shimmer-sweep_1.3s_linear_infinite]">
+                      Speaking
+                    </span>
+                  ) : null}
+                </div>
               </div>
             </>
           )}

@@ -30,6 +30,8 @@ export async function POST(request: Request) {
         user_id: userId,
         user_info: {
           user_id: userId,
+          user_name: body.user_name ?? body.userName ?? "",
+          user_image_url: body.user_image_url ?? body.userImageUrl ?? "",
         },
       }
     : undefined;
