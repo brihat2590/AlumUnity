@@ -14,6 +14,7 @@ import {
   MessageSquare,
   Briefcase,
   User,
+  PhoneCall,
   LogOut,
   ChevronLeft,
   Zap,
@@ -32,6 +33,7 @@ const menuItems: MenuItem[] = [
   { icon: Calendar, label: 'Events', path: '/events' },
   { icon: MessageSquare, label: 'Forums', path: '/forums' },
   { icon: Briefcase, label: 'Opportunities', path: '/oppertunities' },
+  { icon: PhoneCall, label: 'Calls', path: '/call' },
   { icon: User, label: 'Profile', path: '/profile' },
   {icon:Zap,label:"Resume review",path:"/resumereview"}
   // { icon: User, label: 'Video Chat', path: '/videochat' },
@@ -165,7 +167,7 @@ export function SidebarNew({ onCollapseChange }: SidebarNewProps) {
         <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 py-4 custom-scrollbar">
           <nav className="flex flex-col gap-1.5">
             {menuItems.map(({ icon: Icon, label, path }) => {
-              const isActive = pathname === path;
+              const isActive = pathname === path || pathname.startsWith(`${path}/`);
               return (
                 <Link href={path} key={label} className="outline-none">
                   <div

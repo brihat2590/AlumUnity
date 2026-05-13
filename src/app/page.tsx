@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Check, CheckCircle2, FileText, GraduationCap, Network } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2, FileText, GraduationCap, Network, PhoneCall } from "lucide-react";
 import { Inter, Manrope } from "next/font/google";
 import Link from "next/link";
 
@@ -90,8 +90,18 @@ export default function Home() {
             <a className="text-slate-500 transition-colors duration-300 hover:text-indigo-500" href="#features">
               Features
             </a>
+            <Link className="text-slate-500 transition-colors duration-300 hover:text-indigo-500" href="/call">
+              Calls
+            </Link>
           </div>
           <div className="flex items-center gap-6">
+            <Link
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-6 py-2.5 font-headline text-xs font-bold uppercase tracking-widest text-slate-900 transition-all hover:border-indigo-500 hover:text-indigo-500"
+              href="/call"
+            >
+              <PhoneCall className="h-3.5 w-3.5" />
+              Calls
+            </Link>
             <Link
               className="rounded-full bg-indigo-500 px-6 py-2.5 font-headline text-xs font-bold uppercase tracking-widest text-white shadow-sm transition-all hover:shadow-lg hover:shadow-indigo-500/20"
               href="/login"
@@ -125,6 +135,12 @@ export default function Home() {
                 href="/login"
               >
                 Explore Opportunities
+              </Link>
+              <Link
+                className="rounded-full border border-slate-200 px-8 py-4 font-headline text-sm font-bold uppercase tracking-widest text-slate-900 transition-colors hover:border-indigo-500 hover:text-indigo-500"
+                href="/call"
+              >
+                Start a Call
               </Link>
               <a
                 className="rounded-full px-8 py-4 font-headline text-sm font-bold uppercase tracking-widest text-slate-900 transition-colors hover:bg-slate-50"
