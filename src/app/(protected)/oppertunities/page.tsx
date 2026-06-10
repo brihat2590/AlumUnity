@@ -56,7 +56,7 @@ const Opportunities = () => {
   const { loggedInUser } = useFirebase();
   const userId = loggedInUser?.uid || "";
 
-  const [opportunityData, setOpportunityData] = useState(initialOpportunityData);
+  const [opportunityData, setOpportunityData] = useState<OpportunityFormData>(initialOpportunityData);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [opportunities, setOpportunities] = useState<OpportunityItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -80,7 +80,7 @@ const Opportunities = () => {
       Company: opp.Company || "",
       companyUrl: opp.companyUrl || "",
       logoUrl: opp.logoUrl || "",
-      //@ts-ignore
+
       type: opp.type || "",
       location: opp.location || "",
       salary: opp.salary || "",
