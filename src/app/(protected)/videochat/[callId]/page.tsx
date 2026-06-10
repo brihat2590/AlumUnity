@@ -9,20 +9,20 @@ import {
   SpeakerLayout,
   StreamVideoClient,
 } from "@stream-io/video-react-sdk";
-// @ts-expect-error Stream styles are provided by the SDK package at runtime.
+
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import { useFirebase } from "@/firebase/firebase.config";
 import { useParams } from "next/navigation";
 
 export default function VideoChat() {
-  const {callId} = useParams();
-  if(!callId){
+  const { callId } = useParams();
+  if (!callId) {
     throw new Error("Call ID is required");
   }
   const [client, setClient] = useState<StreamVideoClient>();
   const [call, setCall] = useState<Call>();
-  const {loggedInUser} = useFirebase();
-  
+  const { loggedInUser } = useFirebase();
+
 
   // const callId = "csb-" + "randon-call-id";
   const callType = "default";

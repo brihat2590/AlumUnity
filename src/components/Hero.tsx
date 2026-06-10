@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, Variants, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Users, Calendar, Video, ChevronDown } from 'lucide-react';
 import { Button } from "./ui/button";
@@ -123,8 +123,8 @@ export const Hero: React.FC = () => {
                 transition={{ delay: 0.7, duration: 0.6 }}
                 className="text-lg text-gray-600 md:pr-12"
               >
-                AlumUnity bridges the gap between students and alumni, 
-                creating opportunities for mentorship, networking, and 
+                AlumUnity bridges the gap between students and alumni,
+                creating opportunities for mentorship, networking, and
                 career guidance all in one platform.
               </motion.p>
             </div>
@@ -136,7 +136,7 @@ export const Hero: React.FC = () => {
               className="flex flex-col sm:flex-row gap-4"
             >
               {/* Join as Student */}
-              <Button 
+              <Button
                 size="lg"
                 className="group"
                 onClick={handleJoinClick} // ✅ Added click handler
@@ -152,8 +152,8 @@ export const Hero: React.FC = () => {
               </Button>
 
               {/* Join as Alumni */}
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="lg"
                 className="group"
                 onClick={handleJoinClick} // ✅ Same handler
@@ -199,7 +199,7 @@ export const Hero: React.FC = () => {
           >
             <div className="relative z-10 rounded-2xl shadow-raised overflow-hidden">
               <AnimatePresence mode="wait">
-                <motion.img 
+                <motion.img
                   key={currentImageIndex}
                   src={images[currentImageIndex].url}
                   alt={images[currentImageIndex].alt}
@@ -219,12 +219,12 @@ export const Hero: React.FC = () => {
             </div>
 
             <motion.div
-              variants={floatingCircleVariants}
+              // variants={floatingCircleVariants}
               animate="animate"
               className="absolute -bottom-6 -right-6 w-72 h-72 bg-secondary-100 rounded-full -z-10"
             />
             <motion.div
-              variants={floatingCircleVariants}
+              // variants={floatingCircleVariants}
               animate="animate"
               transition={{ delay: 1 }}
               className="absolute -top-6 -left-6 w-48 h-48 bg-primary-100 rounded-full -z-10"
@@ -236,9 +236,8 @@ export const Hero: React.FC = () => {
                 <button
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    index === currentImageIndex ? 'bg-white w-6' : 'bg-white/50'
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentImageIndex ? 'bg-white w-6' : 'bg-white/50'
+                    }`}
                 />
               ))}
             </div>
