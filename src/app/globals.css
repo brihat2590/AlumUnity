@@ -1,7 +1,7 @@
 @config "../../tailwind.config.ts";
 @import "tailwindcss";
-@import "tw-animate-css"; 
-@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
+@import "tw-animate-css";
+
 
 .font-headline {
   font-family: var(--font-headline), sans-serif;
@@ -24,9 +24,19 @@
   line-height: 1.25rem;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent any element from causing horizontal overflow */
+body {
+  overflow-x: hidden;
+}
+
 .glass-nav {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .glass {
@@ -49,6 +59,7 @@
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0) scale(1);
@@ -102,6 +113,7 @@
 
 .my-theme-overrides {
   font-family: sans-serif;
+
   &.str-video {
     color: white;
   }
