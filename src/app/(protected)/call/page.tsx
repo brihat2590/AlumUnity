@@ -126,15 +126,15 @@ export default function CallPage() {
         }
       `}</style>
 
-      <div className="relative mx-auto max-w-[1200px] px-6 py-24 md:px-12">
-        <header className="relative mb-28 text-center">
+      <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 py-12 sm:py-24 md:px-12">
+        <header className="relative mb-16 sm:mb-28 text-center">
           
 
-          <h1 className="call-studio-font mb-8 text-3xl font-semibold tracking-tight text-slate-900 md:text-5xl lg:text-7xl">
+          <h1 className="call-studio-font mb-6 sm:mb-8 text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-semibold tracking-tight text-slate-900">
             Meet in a more human way
           </h1>
 
-          <p className="mx-auto max-w-2xl call-studio-font text-lg font-medium leading-relaxed text-slate-500">
+          <p className="mx-auto max-w-2xl call-studio-font text-sm sm:text-base md:text-lg font-medium leading-relaxed text-slate-500">
             A simplified directory for focused communication. Minimal noise, maximum clarity.
           </p>
         </header>
@@ -147,7 +147,7 @@ export default function CallPage() {
               return (
                 <div
                   key={person.id}
-                  className="group rounded-3xl border border-slate-200 bg-white p-8 transition-all duration-300 hover:border-slate-300 hover:shadow-md"
+                  className="group rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 transition-all duration-300 hover:border-slate-300 hover:shadow-md"
                 >
                   <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
                     <div className="relative shrink-0">
@@ -229,12 +229,12 @@ export default function CallPage() {
         )}
 
         <section className="relative mt-40">
-          <div className="relative rounded-[2.5rem] border border-slate-200 bg-white p-12 text-center shadow-sm md:p-20">
+          <div className="relative rounded-[2rem] sm:rounded-[2.5rem] border border-slate-200 bg-white p-6 sm:p-12 md:p-20 text-center shadow-sm">
             <div className="relative z-10">
-              <h3 className="call-studio-font mb-6 text-4xl font-black text-slate-900 md:text-5xl">
+              <h3 className="call-studio-font mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-slate-900">
                 Host your own discussion
               </h3>
-              <p className="call-studio-font mx-auto mb-10 max-w-lg text-lg font-medium text-slate-500">
+              <p className="call-studio-font mx-auto mb-8 sm:mb-10 max-w-lg text-sm sm:text-base md:text-lg font-medium text-slate-500">
                 Create a focused sanctuary for deep dives or schedule a session for later.
               </p>
 

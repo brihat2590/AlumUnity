@@ -138,33 +138,33 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
+    <div className="max-w-6xl mx-auto p-3 sm:p-6 space-y-6 sm:space-y-8">
       {/* User Profile Card */}
       <section className="bg-white rounded-xl shadow-md overflow-hidden">
         <div className="md:flex">
           {/* Profile Image Section */}
-          <div className="md:w-1/3 bg-gray-100 p-6 flex flex-col items-center justify-center">
+          <div className="md:w-1/3 bg-gray-100 p-4 sm:p-6 flex flex-col items-center justify-center">
             {userInfo?.profilePic ? (
               <img 
                 src={userInfo.profilePic} 
                 alt="Profile" 
-                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
+                className="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full object-cover border-4 border-white shadow-md"
               />
             ) : (
-              <div className="w-32 h-32 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-500 text-4xl font-bold">
+              <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-500 text-2xl sm:text-3xl md:text-4xl font-bold">
                 {userInfo?.name?.charAt(0) || 'U'}
               </div>
             )}
-            <div className="mt-4 text-center">
-              <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+            <div className="mt-3 sm:mt-4 text-center">
+              <div className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-indigo-100 text-indigo-800">
                 {userInfo?.Role || 'USER'}
               </div>
             </div>
           </div>
           
           {/* Profile Details Section */}
-          <div className="md:w-2/3 p-6">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <div className="md:w-2/3 p-4 sm:p-6">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-2">
               {userInfo.name || 'User Name'}
             </h1>
             <p className="text-gray-600 mb-6">{userInfo.Bio || 'No bio available'}</p>
@@ -251,9 +251,9 @@ const Dashboard = () => {
       </section>
 
       {/* Events Section */}
-      <section className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-800">Upcoming Events</h2>
+        <section className="space-y-4 sm:space-y-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Upcoming Events</h2>
           <Link href="/events">
             <Button variant="outline" className="text-indigo-600 border-indigo-600 hover:bg-indigo-50">
               View All Events
@@ -305,9 +305,9 @@ const Dashboard = () => {
       </section>
 
       {/* Forums Section */}
-      <section className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-800">Top Forum Questions</h2>
+      <section className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Top Forum Questions</h2>
           <Link href="/forums">
             <Button variant="outline" className="text-indigo-600 border-indigo-600 hover:bg-indigo-50">
               View All Questions

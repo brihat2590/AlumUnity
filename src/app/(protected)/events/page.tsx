@@ -67,12 +67,12 @@ const Events = () => {
             Join Here
           </span>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-md rounded-lg">
           <DialogHeader>
             <DialogTitle>Join Meeting</DialogTitle>
           </DialogHeader>
           <p>Are you sure you want to join this meeting?</p>
-          <DialogFooter>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
             <Button variant="secondary">Cancel</Button>
             <Button onClick={handleConfirm}>Yes, Join</Button>
           </DialogFooter>
@@ -99,11 +99,11 @@ const Events = () => {
   }, []);
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-12 md:px-8 min-h-screen font-sans">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-gray-100 pb-8">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 md:px-8 min-h-screen font-sans">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12 border-b border-gray-100 pb-6 sm:pb-8">
         <div className="space-y-1">
           <h1
-            className="mb-8 text-5xl font-extralight tracking-tight text-[#0f172a] md:text-6xl"
+            className="mb-6 sm:mb-8 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight tracking-tight text-[#0f172a]"
             style={{ fontFamily: "var(--font-manrope)" }}
           >
             The <span className="font-semibold italic">Events</span> 
@@ -116,14 +116,14 @@ const Events = () => {
               Create New Event
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[480px] rounded-lg bg-white border border-gray-200 shadow-xl p-0">
+          <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-[480px] rounded-lg bg-white border border-gray-200 shadow-xl p-0">
             <DialogHeader className="px-6 py-5 border-b border-gray-100">
               <DialogTitle className="text-lg font-medium text-gray-900">Add New Event</DialogTitle>
               <DialogDescription className="text-gray-500 text-sm mt-1">
                 Fill in the details to host a new event.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-5 px-6 py-6">
+              <div className="grid gap-4 sm:gap-5 px-4 sm:px-6 py-4 sm:py-6">
               <div className="space-y-1.5">
                 <Label htmlFor="title" className="text-xs font-semibold text-gray-900 uppercase tracking-wider">
                   Event Title
@@ -264,8 +264,8 @@ const Events = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-24 bg-white rounded-lg border border-gray-200 flex flex-col items-center justify-center">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No upcoming events</h3>
+          <div className="text-center py-16 sm:py-24 bg-white rounded-lg border border-gray-200 flex flex-col items-center justify-center">
+            <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No upcoming events</h3>
             <p className="text-gray-500 text-sm font-light mb-6">There are no events scheduled at the moment.</p>
             <Button onClick={() => setIsDialogOpen(true)} variant="outline" className="text-sm font-medium border-gray-300 rounded-md">
               Create an event

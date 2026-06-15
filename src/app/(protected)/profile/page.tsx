@@ -158,19 +158,19 @@ const Profile = () => {
   const avatarSrc = formData.profilePic || loggedInUser?.photoURL || '';
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-12 md:px-8 lg:px-12">
+    <main className="min-h-screen bg-slate-50 px-3 sm:px-4 py-8 sm:py-12 md:px-8 lg:px-12">
       <div className="mx-auto max-w-5xl">
-        <header className="mb-12 text-center">
+        <header className="mb-8 sm:mb-12 text-center">
           <h1
-            className="mb-8 text-5xl font-extralight tracking-tight text-[#0f172a] md:text-6xl"
+            className="mb-6 sm:mb-8 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight tracking-tight text-[#0f172a]"
             style={{ fontFamily: "var(--font-manrope)" }}
           >
             Edit <span className="font-semibold italic">Profile</span> 
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600">
+          <p className="mx-auto mt-3 sm:mt-4 max-w-2xl text-sm sm:text-base text-slate-600">
             Define your professional legacy within the AlumUnity network with precision and clarity.
           </p>
-          <span className="mt-6 inline-flex items-center gap-2 rounded-full   px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-indigo-700">
+          <span className="mt-4 sm:mt-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-indigo-700">
             Elite Community Member
           </span>
         </header>
@@ -180,12 +180,12 @@ const Profile = () => {
             <FaSpinner className="animate-spin text-xl" />
           </div>
         ) : (
-        <form onSubmit={handleSave} className="space-y-14">
-          <section className="grid grid-cols-1 gap-10 lg:grid-cols-12">
+        <form onSubmit={handleSave} className="space-y-10 sm:space-y-14">
+          <section className="grid grid-cols-1 gap-8 sm:gap-10 lg:grid-cols-12">
             <div className="lg:col-span-4">
               <div className="mx-auto w-fit">
                 <div className="relative">
-                  <div className="h-44 w-44 overflow-hidden rounded-full border-4 border-white shadow-[0_16px_40px_-28px_rgba(15,23,42,0.45)] ring-1 ring-slate-200">
+                  <div className="h-32 w-32 sm:h-40 sm:w-40 md:h-44 md:w-44 overflow-hidden rounded-full border-4 border-white shadow-[0_16px_40px_-28px_rgba(15,23,42,0.45)] ring-1 ring-slate-200">
                     {avatarSrc ? (
                       <img src={avatarSrc} alt="Profile preview" className="h-full w-full object-cover" />
                     ) : (
@@ -260,10 +260,10 @@ const Profile = () => {
             </div>
           </section>
 
-          <section className="border-t border-slate-200 pt-12">
+          <section className="border-t border-slate-200 pt-8 sm:pt-12">
             <div className="mb-6 flex items-center gap-3">
               <School className="h-5 w-5 text-indigo-600" />
-              <h2 className="text-xl font-bold text-slate-900">Academic Background</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900">Academic Background</h2>
             </div>
 
             <label className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">

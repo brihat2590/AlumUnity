@@ -211,23 +211,23 @@ export default function ResumeReview() {
             {/* Background elements */}
             <div className="absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_15%_0%,rgba(129,140,248,0.1),transparent_45%),radial-gradient(circle_at_85%_5%,rgba(99,102,241,0.07),transparent_48%)] pointer-events-none" />
             
-            <div className="relative mx-auto max-w-7xl px-4 py-12 md:px-8 lg:py-16 space-y-12">
+            <div className="relative mx-auto max-w-7xl px-3 sm:px-4 py-8 sm:py-12 md:px-8 lg:py-16 space-y-8 sm:space-y-12">
                 
                 {/* Hero Header */}
-                <header className="mx-auto max-w-4xl px-6 pb-12 pt-5 sm:pt-10 text-center">
-                    <span className="mb-6 inline-block rounded-full border border-indigo-500/20 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-500">
+                <header className="mx-auto max-w-4xl px-4 sm:px-6 pb-8 sm:pb-12 pt-4 sm:pt-5 sm:pt-10 text-center">
+                    <span className="mb-4 sm:mb-6 inline-block rounded-full border border-indigo-500/20 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-500">
                         Exclusive Access
                     </span>
 
                     <h1
-                        className="mb-8 text-5xl font-extralight tracking-tight text-[#0f172a] md:text-6xl"
+                        className="mb-6 sm:mb-8 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight tracking-tight text-[#0f172a]"
                         style={{ fontFamily: 'var(--font-manrope)' }}
                     >
                         The <span className="font-semibold italic">Resume</span> Exchange
                     </h1>
 
                     <p
-                        className="mx-auto max-w-2xl text-lg font-light leading-relaxed text-slate-500"
+                        className="mx-auto max-w-2xl text-sm sm:text-base md:text-lg font-light leading-relaxed text-slate-500"
                         style={{ fontFamily: 'var(--font-inter)' }}
                     >
                         An elite collection of resumes curated for the AlumUnity network.
@@ -291,7 +291,7 @@ export default function ResumeReview() {
                                 <Link
                                     href={`/resumereview/${resume.slug}`}
                                     key={resume.id}
-                                    className="luxury-shadow luxury-shadow-hover group flex flex-col justify-between overflow-hidden rounded-[30px] border border-transparent bg-gradient-to-br from-white via-white to-indigo-50/25 p-8 shadow-[0_30px_70px_-58px_rgba(79,70,229,0.55)] [background:linear-gradient(white,white)_padding-box,linear-gradient(135deg,rgba(99,102,241,0.42),rgba(99,102,241,0.18),rgba(15,23,42,0.12))_border-box] transition-all duration-500 hover:-translate-y-1 hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(135deg,rgba(99,102,241,0.6),rgba(99,102,241,0.24),rgba(15,23,42,0.16))_border-box]"
+                                    className="luxury-shadow luxury-shadow-hover group flex flex-col justify-between overflow-hidden rounded-[24px] sm:rounded-[30px] border border-transparent bg-gradient-to-br from-white via-white to-indigo-50/25 p-6 sm:p-8 shadow-[0_30px_70px_-58px_rgba(79,70,229,0.55)] [background:linear-gradient(white,white)_padding-box,linear-gradient(135deg,rgba(99,102,241,0.42),rgba(99,102,241,0.18),rgba(15,23,42,0.12))_border-box] transition-all duration-500 hover:-translate-y-1 hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(135deg,rgba(99,102,241,0.6),rgba(99,102,241,0.24),rgba(15,23,42,0.16))_border-box]"
                                 >
                                     <div>
                                         <div className="mb-6 flex items-start justify-between">
@@ -342,7 +342,7 @@ export default function ResumeReview() {
             {/* Modal Upload Form Overlay */}
             {showUploadForm && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-slate-900/30 p-4 backdrop-blur-sm sm:p-6 opacity-100 transition-opacity">
-                    <div className="relative w-full max-w-2xl transform rounded-[32px] bg-gradient-to-br from-white via-white to-indigo-50/20 p-6 text-left align-middle shadow-[0_48px_90px_-52px_rgba(15,23,42,0.45)] transition-all sm:p-8">
+                    <div className="relative w-full max-w-2xl transform rounded-[24px] sm:rounded-[32px] bg-gradient-to-br from-white via-white to-indigo-50/20 p-4 sm:p-6 md:p-8 text-left align-middle shadow-[0_48px_90px_-52px_rgba(15,23,42,0.45)] transition-all">
                         
                         <div className="mb-6 flex items-start justify-between">
                             <div>

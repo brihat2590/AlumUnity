@@ -181,20 +181,20 @@ const Opportunities = () => {
   return (
     <>
       <div className={`${manrope.variable} ${inter.variable} min-h-screen  text-[#0f172a] antialiased`}>
-        <header className="mx-auto max-w-4xl px-6 pb-24 pt-5 sm:pt-10  text-center">
-          <span className="mb-6 inline-block rounded-full border border-indigo-500/20 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-500">
+        <header className="mx-auto max-w-4xl px-4 sm:px-6 pb-16 sm:pb-24 pt-4 sm:pt-5 sm:pt-10 text-center">
+          <span className="mb-4 sm:mb-6 inline-block rounded-full border border-indigo-500/20 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-500">
             Exclusive Access
           </span>
 
           <h1
-            className="mb-8 text-5xl font-extralight tracking-tight text-[#0f172a] md:text-6xl"
+            className="mb-6 sm:mb-8 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight tracking-tight text-[#0f172a]"
             style={{ fontFamily: "var(--font-manrope)" }}
           >
             The <span className="font-semibold italic">Career</span> Exchange
           </h1>
 
           <p
-            className="mx-auto max-w-2xl text-lg font-light leading-relaxed text-slate-500"
+            className="mx-auto max-w-2xl text-sm sm:text-base md:text-lg font-light leading-relaxed text-slate-500"
             style={{ fontFamily: "var(--font-inter)" }}
           >
             An elite collection of high-impact opportunities curated for the AlumUnity network.
@@ -202,7 +202,7 @@ const Opportunities = () => {
           </p>
         </header>
 
-        <main className="mx-auto max-w-7xl px-6 pb-24">
+        <main className="mx-auto max-w-7xl px-4 sm:px-6 pb-16 sm:pb-24">
           {isLoading ? (
             <div className="flex items-center justify-center h-[40vh]">
               <FaSpinner className="animate-spin text-xl" />
@@ -213,7 +213,7 @@ const Opportunities = () => {
                 opportunities.map((opportunity) => (
                   <article
                     key={opportunity.id}
-                    className="luxury-shadow luxury-shadow-hover group flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-10 transition-all duration-500"
+                    className="luxury-shadow luxury-shadow-hover group flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-6 sm:p-10 transition-all duration-500"
                   >
                     <div className="mb-10 flex items-start justify-between">
                       <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl border border-slate-50 bg-slate-50/50">
@@ -325,7 +325,7 @@ const Opportunities = () => {
                   </article>
                 ))
               ) : (
-                <div className="col-span-full rounded-2xl border border-slate-100 bg-slate-50/50 p-12 text-center text-slate-500">
+                <div className="col-span-full rounded-2xl border border-slate-100 bg-slate-50/50 p-6 sm:p-12 text-center text-sm sm:text-base text-slate-500">
                   No opportunities available yet.
                 </div>
               )}
@@ -351,7 +351,7 @@ const Opportunities = () => {
               </Button>
             </DialogTrigger>
 
-            <DialogContent className="max-h-[90vh] overflow-y-auto rounded-2xl border-slate-100 bg-white p-8 sm:max-w-[620px]">
+            <DialogContent className="max-h-[90vh] overflow-y-auto rounded-2xl border-slate-100 bg-white p-4 sm:p-6 md:p-8 sm:max-w-[620px] max-w-[calc(100vw-1rem)]">
               <DialogHeader>
                 <DialogTitle
                   className="text-2xl font-bold text-[#0f172a]"

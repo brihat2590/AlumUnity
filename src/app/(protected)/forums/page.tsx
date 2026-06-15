@@ -185,13 +185,13 @@ const Forums = () => {
 
   return (
     <div className={`${manrope.variable} ${inter.variable} min-h-screen text-[#1a1a2e]`}>
-      <main className="mx-auto min-h-screen max-w-4xl pb-32 pt-10">
-        <header className="mb-8 flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-[#1a1a2e] md:text-4xl" style={{ fontFamily: 'var(--font-manrope)' }}>
+      <main className="mx-auto min-h-screen max-w-4xl pb-32 px-4 sm:px-6 pt-6 sm:pt-10">
+        <header className="mb-6 sm:mb-8 flex items-start justify-between gap-3 sm:gap-4">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-[#1a1a2e]" style={{ fontFamily: 'var(--font-manrope)' }}>
               Forums
             </h1>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-500" style={{ fontFamily: 'var(--font-inter)' }}>
+            <p className="mt-1 sm:mt-2 max-w-xl text-xs sm:text-sm leading-relaxed text-slate-500" style={{ fontFamily: 'var(--font-inter)' }}>
               Share ideas, ask questions, and engage with thoughtful conversations from the alumni community.
             </p>
           </div>
@@ -240,7 +240,7 @@ const Forums = () => {
           </Dialog>
         </header>
 
-        <section className="space-y-10">
+        <section className="space-y-6 sm:space-y-10">
           {isLoading ? (
             <div className="flex items-center justify-center h-[40vh]">
               <FaSpinner className="animate-spin text-xl" />
@@ -278,7 +278,7 @@ const Forums = () => {
                   <div className="mb-5">
                     <Link href={`/forums/${question.id}`}>
                       <h2
-                        className="mb-1 text-2xl font-bold leading-[1.3] text-[#1a1a2e] transition-colors duration-500 group-hover:text-[#4647d3] md:text-3xl"
+                        className="mb-1 text-xl sm:text-2xl md:text-3xl font-bold leading-[1.3] text-[#1a1a2e] transition-colors duration-500 group-hover:text-[#4647d3]"
                         style={{ fontFamily: 'var(--font-manrope)' }}
                       >
                         {question.question}
@@ -286,8 +286,8 @@ const Forums = () => {
                     </Link>
                   </div>
 
-                  <div className="flex items-center gap-10">
-                    <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-2 py-1.5">
+                  <div className="flex items-center gap-4 sm:gap-10">
+                    <div className="flex items-center gap-1 sm:gap-2 rounded-xl bg-slate-50 px-1.5 sm:px-2 py-1.5">
                       <Button
                         variant={question.upVotes?.includes(userId) ? 'default' : 'outline'}
                         className={`h-11 w-11 rounded-full border-0 p-0 transition-all ${

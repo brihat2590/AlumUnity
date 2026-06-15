@@ -162,45 +162,45 @@ export default function ResumeReviewDetailPage() {
 
   return (
     <main className="flex h-screen flex-col overflow-hidden bg-[#fcfcfd] text-slate-900 antialiased">
-      <header className="flex h-20 items-center justify-between border-b border-slate-100 bg-white px-8">
-        <div className="flex min-w-0 items-center gap-6">
-          <Link href="/resumereview" className="group flex items-center gap-3 text-slate-400 transition-colors hover:text-violet-600">
-            <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
-            <span className="text-sm font-semibold uppercase tracking-tight">Overview</span>
+      <header className="flex min-h-16 sm:h-20 items-center justify-between border-b border-slate-100 bg-white px-3 sm:px-6 md:px-8 gap-2">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-4 md:gap-6">
+          <Link href="/resumereview" className="group flex items-center gap-1.5 sm:gap-3 text-slate-400 transition-colors hover:text-violet-600 shrink-0">
+            <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:-translate-x-1" />
+            <span className="hidden sm:inline text-sm font-semibold uppercase tracking-tight">Overview</span>
           </Link>
-          <div className="h-6 w-px bg-slate-100" />
-          <div className="min-w-0">
-            <h1 className="truncate text-lg font-bold tracking-tight text-slate-900">
+          <div className="hidden sm:block h-6 w-px bg-slate-100" />
+          <div className="min-w-0 hidden sm:block">
+            <h1 className="truncate text-sm sm:text-lg font-bold tracking-tight text-slate-900">
               {reviewerName} — Senior UX Resume
             </h1>
             <p className="truncate text-xs font-medium text-slate-400">Reviewing for {title}</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="mr-4 flex -space-x-2">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="hidden sm:flex mr-2 sm:mr-4 -space-x-2">
             {headerAvatars.map((avatar) => (
               <img
                 key={avatar.id}
                 alt={avatar.name}
-                className="h-8 w-8 rounded-full border-2 border-white object-cover ring-1 ring-slate-100"
+                className="h-6 w-6 sm:h-8 sm:w-8 rounded-full border-2 border-white object-cover ring-1 ring-slate-100"
                 src={avatar.photoURL || `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(avatar.name)}`}
               />
             ))}
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-slate-50 text-[10px] font-bold text-slate-400 ring-1 ring-slate-100">
+            <div className="flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-full border-2 border-white bg-slate-50 text-[10px] font-bold text-slate-400 ring-1 ring-slate-100">
               +{Math.max(commentCount - headerAvatars.length, 1)}
             </div>
           </div>
           <button
             type="button"
             onClick={handleShare}
-            className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-600 transition-all hover:bg-slate-50"
+            className="rounded-xl border border-slate-200 bg-white px-3 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-slate-600 transition-all hover:bg-slate-50"
           >
-            <span className="inline-flex items-center gap-2"><Share2 className="h-4 w-4" /> Share</span>
+            <span className="inline-flex items-center gap-1 sm:gap-2"><Share2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Share</span>
           </button>
           <button
             type="button"
-            className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet-600/30 active:translate-y-0"
+            className="rounded-xl bg-violet-600 px-3 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet-600/30 active:translate-y-0"
           >
             Finish Review
           </button>
@@ -240,8 +240,8 @@ export default function ResumeReviewDetailPage() {
             </div>
           </div>
 
-          <div className="custom-scrollbar flex flex-1 flex-col items-center overflow-y-auto px-12 pb-20 pt-28">
-            <div className="resume-paper relative w-full max-w-[840px] rounded-sm bg-white p-16">
+          <div className="custom-scrollbar flex flex-1 flex-col items-center overflow-y-auto px-3 sm:px-6 md:px-12 pb-12 sm:pb-20 pt-20 sm:pt-28">
+            <div className="resume-paper relative w-full max-w-[840px] rounded-sm bg-white p-4 sm:p-8 md:p-12 lg:p-16">
               <div className="mb-16 flex items-start justify-between">
                 <div>
                   <h2 className="mb-2 text-4xl font-black tracking-tight text-slate-900">{reviewerName}</h2>
@@ -298,8 +298,8 @@ export default function ResumeReviewDetailPage() {
           </div>
         </div>
 
-        <aside className="flex w-full flex-col border-l border-slate-100 bg-white md:w-[400px]">
-          <div className="flex items-center justify-between border-b border-slate-50 p-6">
+        <aside className="flex w-full flex-col border-l border-slate-100 bg-white md:w-[400px] lg:w-[400px]">
+          <div className="flex items-center justify-between border-b border-slate-50 p-4 sm:p-6">
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-slate-900">Feedback</h3>
               <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">{commentCount}</span>
@@ -314,7 +314,7 @@ export default function ResumeReviewDetailPage() {
             </div> */}
           </div>
 
-          <div className="custom-scrollbar flex-1 overflow-y-auto p-6">
+          <div className="custom-scrollbar flex-1 overflow-y-auto p-4 sm:p-6">
             <div className="mb-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-5">
               <div className="mb-3 flex items-center gap-3">
                 <Info className="h-5 w-5 text-violet-600" />
@@ -367,14 +367,14 @@ export default function ResumeReviewDetailPage() {
             </div>
           </div>
 
-          <div className="border-t border-slate-50 bg-white p-6">
+          <div className="border-t border-slate-50 bg-white p-4 sm:p-6">
             <form onSubmit={handleCommentSubmit} className="relative">
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                rows={4}
+                rows={3}
                 placeholder="Add a general comment..."
-                className="custom-scrollbar min-h-[100px] w-full resize-none rounded-2xl bg-slate-50/50 p-4 pr-12 text-sm text-slate-700 outline-none transition-all placeholder:text-slate-400 focus:border-violet-600/40 focus:bg-white focus:ring-2 focus:ring-violet-600/20"
+                className="custom-scrollbar min-h-[80px] sm:min-h-[100px] w-full resize-none rounded-2xl bg-slate-50/50 p-3 sm:p-4 pr-12 text-sm text-slate-700 outline-none transition-all placeholder:text-slate-400 focus:border-violet-600/40 focus:bg-white focus:ring-2 focus:ring-violet-600/20"
               />
               <div className="absolute bottom-3 right-3 flex items-center gap-1">
                 {/* <button type="button" className="p-2 text-slate-400 hover:text-violet-600" aria-label="Attach file">

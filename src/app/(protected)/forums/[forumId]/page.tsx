@@ -177,10 +177,10 @@ export default function ForumDetailPage() {
 
   return (
     <div className={`${manrope.variable} ${inter.variable} min-h-screen bg-white text-[#1a1a2e]`}>
-      <main className="mx-auto min-h-screen max-w-3xl px-6 pb-28 pt-10">
+      <main className="mx-auto min-h-screen max-w-3xl px-4 sm:px-6 pb-28 pt-6 sm:pt-10">
         <Link
           href="/forums"
-          className="mb-12 inline-flex items-center gap-2 text-sm font-semibold text-[#4647d3] transition-colors hover:text-[#3c3db8]"
+          className="mb-8 sm:mb-12 inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#4647d3] transition-colors hover:text-[#3c3db8]"
         >
           <ArrowLeft className="h-4 w-4" /> Back to Forum
         </Link>
@@ -208,17 +208,17 @@ export default function ForumDetailPage() {
 
           <div className="mb-10">
             <h1
-              className="mb-6 text-3xl font-bold leading-[1.3] text-[#1a1a2e] md:text-5xl"
+              className="mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-5xl font-bold leading-[1.3] text-[#1a1a2e]"
               style={{ fontFamily: 'var(--font-manrope)' }}
             >
               {question.question}
             </h1>
-            <p className="text-lg leading-relaxed text-slate-500 opacity-90" style={{ fontFamily: 'var(--font-inter)' }}>
+            <p className="text-sm sm:text-base md:text-lg leading-relaxed text-slate-500 opacity-90" style={{ fontFamily: 'var(--font-inter)' }}>
               Discussion thread from the alumni network. Cast your vote and share a thoughtful response on the thread page.
             </p>
           </div>
 
-          <div className="flex items-center gap-5 rounded-full bg-[#4647d3]/[0.06] px-4 py-2.5 w-fit">
+          <div className="flex items-center gap-3 sm:gap-5 rounded-full bg-[#4647d3]/[0.06] px-3 sm:px-4 py-2.5 w-fit">
             <Button
               
               className={`h-11 w-11 rounded-full border-0 p-0 transition-all ${
