@@ -202,7 +202,7 @@ const Forums = () => {
                 <Plus className="h-5 w-5" />
               </Button>
             </DialogTrigger>
-            <DialogContent className="rounded-2xl border-slate-100 p-7 sm:max-w-[560px]">
+            <DialogContent className="rounded-2xl border border-slate-100 bg-white p-7 shadow-lg sm:max-w-[560px]">
               <DialogHeader>
                 <DialogTitle className="text-2xl font-bold text-[#1a1a2e]" style={{ fontFamily: 'var(--font-manrope)' }}>
                   New Question
